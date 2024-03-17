@@ -1,0 +1,23 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }  
+
+.Container {
+    display: flex;
+    width: 100vw; /* Ensure the container takes the full viewport width */
+    height: 100vh; /* Optional: Adjust the height as needed, here it takes the full viewport height */
+}
+  
+.Home {
+    width: 75vw; /* 75% of the viewport width */
+    background-color: #afa0a0; /* Example background color for distinction */
+    /* Additional styling for the left column can go here */
+}
+
+.Menu {
+    width: 24vw; /* 25% of the viewport width */
+    background-color: #d0d0d0; /* Example background color for distinction */
+    /* Additional styling for the right column can go here */
+}
