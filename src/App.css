@@ -13,16 +13,16 @@ html body {
   display: flex;
   justify-content: space-around;
   background-color: #61dafb;
-  padding: 10px 0;
+  padding: 4px 0;
   color: white;  
 }
 
 .NavBar button {
   background-color: #61dafb;
   border: none;
-  padding: 3vh 4vw;
+  padding: 2vh 6vw;
   cursor: pointer;
-  font-size: calc(6px + 2vmin);
+  font-size: calc(10px + 1vmin);
 }
 
 .NavBar button:hover {

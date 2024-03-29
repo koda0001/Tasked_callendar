@@ -3,8 +3,17 @@ import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInte
 import styles from '../css/MyCallendar.module.css'
 
 const MyCalendar = ({ events }) => {
-  const [view, setView] = useState('day'); // Possible values: 'day', 'week', 'month'
+  const [view, setView] = useState('week'); // Possible values: 'day', 'week', 'month'
   const [currentDate, setCurrentDate] = useState(new Date());
+  // const [currentMonth, setCurrentMonth] = useState()
+  const currentMonth = currentDate.getMonth();
+
+  const firstDayOfMonth = startOfMonth(currentMonth);
+  const firstDayOfMonthEEE = format(firstDayOfMonth, 'EEE'); // Full name of the day
+  console.log("currentDate is ", currentDate);
+  console.log("firstDayOfMonth is ", firstDayOfMonth);
+
+
 
   // Function to move the current date forward or backward
   const changeDate = (amount) => {
@@ -28,6 +37,8 @@ const MyCalendar = ({ events }) => {
   } else if (view === 'month') {
     const start = startOfMonth(currentDate);
     const end = endOfMonth(currentDate);
+    // const firstDayOfWeek = startOfWeek(currentDate, { weekStartsOn: 1 });
+    // const paddingDays = getDay(start) - getDay(firstDayOfWeek);
     datesToShow = eachDayOfInterval({ start, end });
   }
 
@@ -46,6 +57,7 @@ const MyCalendar = ({ events }) => {
         <button onClick={() => setView('month')} className={styles.button}>Month</button>
         <button onClick={() => changeDate(-1)} className={styles.button}>&lt; Prev</button>
         <button onClick={() => changeDate(1)} className={styles.button}>Next &gt;</button>
+        <p className='showMonth'>{format(currentDate, 'MMMM yyyy')}</p>     
       </div>
       <div className={styles.grid}>
         {datesToShow.map(date => (
