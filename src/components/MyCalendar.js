@@ -1,52 +1,40 @@
+// MyCalendar.jsx
 import React, { useState } from 'react';
-import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, addDays, subDays } from 'date-fns';
-import styles from '../css/MyCallendar.module.css'
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, addDays, addMonths, subMonths, getDay, subDays } from 'date-fns';
+import styles from '../css/MyCallendar.module.css'; // Update the path as needed
 
-const MyCalendar = ({ events }) => {
-  const [view, setView] = useState('week'); // Possible values: 'day', 'week', 'month'
+const MyCalendar = ({ events = [] }) => {
+  const [view, setView] = useState('month'); // Initial view
   const [currentDate, setCurrentDate] = useState(new Date());
-  // const [currentMonth, setCurrentMonth] = useState()
-  const currentMonth = currentDate.getMonth();
 
-  const firstDayOfMonth = startOfMonth(currentMonth);
-  const firstDayOfMonthEEE = format(firstDayOfMonth, 'EEE'); // Full name of the day
-  console.log("currentDate is ", currentDate);
-  console.log("firstDayOfMonth is ", firstDayOfMonth);
-
-
-
-  // Function to move the current date forward or backward
   const changeDate = (amount) => {
     if (view === 'day') {
       setCurrentDate(addDays(currentDate, amount));
     } else if (view === 'week') {
       setCurrentDate(addDays(currentDate, amount * 7));
     } else if (view === 'month') {
-      setCurrentDate(addDays(currentDate, amount * 30)); // Simplistic approach
+      setCurrentDate(amount > 0 ? addMonths(currentDate, 1) : subMonths(currentDate, 1));
     }
   };
 
-  // Calculate dates to show based on the current view
-  let datesToShow = [];
-  if (view === 'day') {
-    datesToShow = [currentDate];
-  } else if (view === 'week') {
-    const start = startOfWeek(currentDate, { weekStartsOn: 1 });
-    const end = endOfWeek(currentDate, { weekStartsOn: 1 });
-    datesToShow = eachDayOfInterval({ start, end });
-  } else if (view === 'month') {
+  const generateMonthViewDates = () => {
     const start = startOfMonth(currentDate);
     const end = endOfMonth(currentDate);
-    // const firstDayOfWeek = startOfWeek(currentDate, { weekStartsOn: 1 });
-    // const paddingDays = getDay(start) - getDay(firstDayOfWeek);
-    datesToShow = eachDayOfInterval({ start, end });
-  }
+    let dates = eachDayOfInterval({ start, end });
 
-  // Filter events for the current view
+    const paddingDaysCount = getDay(start) === 0 ? 6 : getDay(start) - 1; // Adjust based on week starting on Monday
+    const paddingDays = Array.from({ length: paddingDaysCount }, (_, i) => subDays(start, paddingDaysCount - i));
+    return [...paddingDays, ...dates];
+  };
+
+  let datesToShow = [];
+  if (view === 'month') {
+    datesToShow = generateMonthViewDates();
+  } // Extend with 'day' and 'week' views as necessary
+
+  // Filter events for displayed dates
   const eventsToShow = events.filter(event =>
-    datesToShow.some(date =>
-      format(date, 'yyyy-MM-dd') === format(event.date, 'yyyy-MM-dd')
-    )
+    datesToShow.some(date => format(date, 'yyyy-MM-dd') === format(event.date, 'yyyy-MM-dd'))
   );
 
   return (
@@ -57,16 +45,16 @@ const MyCalendar = ({ events }) => {
         <button onClick={() => setView('month')} className={styles.button}>Month</button>
         <button onClick={() => changeDate(-1)} className={styles.button}>&lt; Prev</button>
         <button onClick={() => changeDate(1)} className={styles.button}>Next &gt;</button>
-        <p className='showMonth'>{format(currentDate, 'MMMM yyyy')}</p>     
+        <p className={styles.showMonth}>{format(currentDate, 'MMMM yyyy')}</p>
       </div>
       <div className={styles.grid}>
-        {datesToShow.map(date => (
-          <div key={date.toString()} className={`${styles.dateCell} ${format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? styles.today : ''}`}>
+        {datesToShow.map((date, index) => (
+          <div key={index} className={`${styles.dateCell} ${format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? styles.today : ''}`}>
             <h3>{format(date, 'dd')}</h3>
             {eventsToShow
               .filter(event => format(event.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
-              .map(event => (
-                <p key={event.description} className={styles.event}>{event.description}</p>
+              .map((event, eventIndex) => (
+                <p key={eventIndex} className={styles.event}>{event.description}</p>
               ))}
           </div>
         ))}
@@ -74,6 +62,5 @@ const MyCalendar = ({ events }) => {
     </div>
   );
 };
-
 
 export default MyCalendar;

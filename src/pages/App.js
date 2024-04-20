@@ -9,7 +9,6 @@ import Tasks from './Tasks';
 
 function App() {
   const [activeView, setActiveView] = useState('Home');
-  const [data] = 0;
 
   const handleNavClick = (viewName) => {
     setActiveView(viewName);
@@ -24,7 +23,6 @@ function App() {
         {activeView === 'Tasks' && <Tasks />}
         {activeView === 'Settings' && <Settings />}
       </div>
-      <h1>Welcome!!</h1>
     </div>
   );
 }
