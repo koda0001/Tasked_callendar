@@ -7,6 +7,7 @@ function NavBar({ onNavClick }) {
             <button onClick={() => onNavClick('Tasks')}>Tasks</button>
             <button onClick={() => onNavClick('Notes')}>Notes</button>
             <button onClick={() => onNavClick('Settings')}>Settings</button>
+            <button onClick={() => onNavClick('Login')}>Login</button>
         </nav>
     )
 }
