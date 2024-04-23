@@ -1,52 +1,44 @@
-html body {
-  padding: 0;
-  margin: 0;
-  overflow-y: inherit;
-  overflow-x: hidden;
+/* App.css */
+
+.Container {
+  display: flex;
+  flex-direction: row; /* Aligns nav and Home side by side */
+  width: 100vw;
+  height: 100vh; /* Full viewport height */
 }
 
-.App {
+nav {
+  flex: 1; /* Takes 1 part of the flex space */
+  background-color: #333;
+  padding: 20px;
+  display: flex;
+  flex-direction: column; /* Stack links vertically */
+}
+
+nav a {
+  text-decoration: none;
+  color: white;
+  padding: 10px;
+  margin: 5px 0;
+  background-color: #555;
+  border-radius: 5px;
   text-align: center;
 }
 
-.NavBar {
-  display: flex;
-  justify-content: space-around;
-  background-color: #61dafb;
-  padding: 4px 0;
-  color: white;  
+nav a:hover {
+  background-color: #777;
 }
 
-.NavBar button {
-  background-color: #61dafb;
-  border: none;
-  padding: 2vh 6vw;
-  cursor: pointer;
-  font-size: calc(10px + 1vmin);
+.Home {
+  flex: 4; /* Takes 4 parts of the flex space */
+  padding: 20px;
+  overflow-y: auto; /* Allows scrolling */
+  background-color: #f4f4f4;
 }
 
-.NavBar button:hover {
-  background-color: #33b7db;
-}
-
-.App-top {
-  background-color: #282c34;
-  min-height: 50vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-mid {
-  background-color: #282c34;
-  min-height: 50vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* Optional: Basic styling reset for body to remove default margin/padding */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
 }

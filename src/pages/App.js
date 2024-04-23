@@ -1,31 +1,32 @@
-// In App.js
-import React, { useState } from 'react';
-import '../App.css';
-import NavBar from '../components/Navbar';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './Home';
 import Notes from './Notes';
-import Settings from './Settings';
 import Tasks from './Tasks';
-import Login from './Login';
+import Settings from './Settings';
+import "../App.css"; // You can define your styles for the modal here
+
 
 function App() {
-  const [activeView, setActiveView] = useState('api/Login');
-
-  const handleNavClick = (viewName) => {
-    setActiveView(viewName);
-  }
-
   return (
-    <div className="App">
-      <NavBar onNavClick={handleNavClick} />
-      <div className="App-content">
-        {activeView === 'Home' && <Home />}
-        {activeView === 'Notes' && <Notes />}
-        {activeView === 'Tasks' && <Tasks />}
-        {activeView === 'Settings' && <Settings />}
-        {activeView === 'Login' && <Login />}
+    <Router>
+      <div className="Container">
+        <nav>
+          <Link to="/">Home</Link>
+          <Link to="/notes">Notes</Link>
+          <Link to="/tasks">Tasks</Link>
+          <Link to="/settings">Settings</Link>
+        </nav>
+        <div className="Home">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/notes" element={<Notes />} />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
 

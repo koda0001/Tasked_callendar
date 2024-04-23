@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import Modal from '../components/Modal';
-import LoginForm from '../components/LoginForm'; // Ensure this component handles the login logic
-import RegisterForm from '../components/RegisterForm'; // Ensure this component handles the registration logic
-import app from '../realm/realmConfig';  // Ensure this is correctly imported
+import Modal from './Modal';
+import LoginForm from './LoginForm'; // Assuming this holds the form logic shown previously
+import RegisterForm from './RegisterForm'; // You need to create this component similarly to LoginForm
+import app from '../realm/realmConfig';  // Ensure this path points to where your `app` instance is created
+
 
 function Login() {
     const [user, setUser] = useState(app.currentUser);
@@ -18,22 +19,15 @@ function Login() {
         setShowModal(false);
     };
 
-    const handleLogout = async () => {
-        await app.currentUser.logOut();
-        setUser(null); // Update state after logout
-    };
-
-    // Show user settings and logout if logged in
     if (user) {
         return (
             <div className="user-settings">
-                <h1>Welcome, {user.profile.email || "User"}!</h1>
-                <button onClick={handleLogout}>Log out</button>
+                <h1>Welcome, {user.profile.email}!</h1>
+                <button onClick={() => user.logOut()}>Log out</button>
             </div>
         );
     }
 
-    // Show login and registration options if not logged in
     return (
         <div className="App">
             <div className="App-header">

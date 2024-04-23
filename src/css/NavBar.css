@@ -1,0 +1,26 @@
+/* NavBar.css */
+.NavBar {
+    background-color: #f4f4f4; /* Light grey background */
+    padding: 10px;
+    text-align: center; /* Center the buttons */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* subtle shadow for depth */
+}
+
+.NavBar button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer; /* Pointer cursor on hover */
+    outline: none; /* Remove default focus outline */
+}
+
+.NavBar button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.NavBar button:active {
+    background-color: #004085; /* Even darker blue when clicked */
+}

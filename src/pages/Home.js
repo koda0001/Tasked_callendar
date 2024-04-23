@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import MyCalendar from '../components/MyCalendar';
-import "../css/Home.css";
 
 const Home = () => {
   const [events, setEvents] = useState([]);

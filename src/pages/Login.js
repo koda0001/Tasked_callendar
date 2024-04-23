@@ -7,14 +7,14 @@ const app = new Realm.App({ id: APP_ID });
 
 // Create a component that displays the given user's details
 function UserDetail({ user }) {
-    const logoutanonymus = async () => {
+    const logout = async () => {
         await app.currentUser.logOut();
     }
 
     return (
       <div>
         <h1>Logged in with anonymous id: {user.id}</h1>
-        <button onClick={logoutanonymus}>Log out</button>
+        <button onClick={logout}>Log out</button>
       </div>
     );
 }
