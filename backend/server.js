@@ -27,12 +27,30 @@ async function main() {
         const events = await eventsCollection.find(
           {'userid' : `${userId}` }
         ).toArray();
-        console.log(events); // Log all events
-        console.log("userID: ", userId); // Log all events
+        // console.log(events); // Log all events
+        // console.log("userID: ", userId); // Log all events
         res.json(events);
       } catch (error) {
         console.log("Error in fetching events:", error);
         res.status(500).json({ message: "Error fetching data", error });
+      }
+    });
+
+    exp.post('/api/addevent', async (req, res) => {
+      try {
+        const { userid, date, description } = req.body; // Extracting from the body now
+        const eventsCollection = db.collection('events');
+        await eventsCollection.insertOne({
+          date: date,
+          description: description,
+          userid: userid
+      });
+        res.json({ message: "Event added successfully" });
+        // console.log(events); // Log all events
+        // console.log("userID: ", userId); // Log all events
+      } catch (error) {
+        console.log("Error in adding event:", error);
+        res.status(500).json({ message: "Error adding event data", error });
       }
     });
 

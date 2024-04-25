@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import * as Realm from "realm-web";
-import { APP_ID } from "../realm/constants";
+import app from '../realm/realmConfig';
 
-const app = new Realm.App({ id: APP_ID })
-
-function UserDetail() {
+function UserDelete() {
     const [user, setUser] = useState(app.currentUser);
     const navigate = useNavigate();
 
@@ -26,4 +24,4 @@ function UserDetail() {
 
 }
 
-export default UserDetail;
+export default UserDelete;

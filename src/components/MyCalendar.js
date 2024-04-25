@@ -1,11 +1,14 @@
-// MyCalendar.jsx
 import React, { useState } from 'react';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, addDays, addMonths, subMonths, getDay, subDays } from 'date-fns';
+import Modal from '../components/Modal';
+import CreateEvent from './CreateEventForm';
 import styles from '../css/MyCallendar.module.css'; // Update the path as needed
 
 const MyCalendar = ({ events = [] }) => {
   const [view, setView] = useState('month'); // Initial view
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const changeDate = (amount) => {
     if (view === 'day') {
@@ -15,6 +18,16 @@ const MyCalendar = ({ events = [] }) => {
     } else if (view === 'month') {
       setCurrentDate(amount > 0 ? addMonths(currentDate, 1) : subMonths(currentDate, 1));
     }
+  };
+
+  const openModal = (date) => {
+    setSelectedDate(date);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedDate(null);
   };
 
   const generateMonthViewDates = () => {
@@ -45,6 +58,8 @@ const MyCalendar = ({ events = [] }) => {
     datesToShow.some(date => format(date, 'yyyy-MM-dd') === format(event.date, 'yyyy-MM-dd'))
   );
 
+  const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
+
   return (
     <div className={styles.calendarContainer}>
       <div className={styles.controls}>
@@ -57,7 +72,7 @@ const MyCalendar = ({ events = [] }) => {
       </div>
       <div className={styles.grid}>
         {datesToShow.map((date, index) => (
-          <div key={index} className={`${styles.dateCell} ${format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? styles.today : ''}`}>
+          <div key={index} onClick={() => openModal(date)} className={`${styles.dateCell} ${format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? styles.today : ''}`}>
             <h3>{format(date, 'dd')}</h3>
             {eventsToShow
               .filter(event => format(event.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
@@ -67,6 +82,10 @@ const MyCalendar = ({ events = [] }) => {
           </div>
         ))}
       </div>
+        <Modal isOpen={showModal} close={closeModal}>
+        <h2>Events on {formattedDate}</h2>
+          <CreateEvent date={formattedDate} close={closeModal} />
+        </Modal>
     </div>
   );
 };

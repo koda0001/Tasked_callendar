@@ -12,7 +12,6 @@ const Home = () => {
     const fetchEvents = async () => {
       setIsLoading(true);
       setError(null);
-      console.log("test2", localStorage.getItem(''))
       try {
         const response = await fetch(`http://localhost:3002/api/events?userId=${userId}`, {
           headers: {

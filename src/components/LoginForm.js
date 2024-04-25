@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import * as Realm from "realm-web";
-import { APP_ID } from "../realm/constants";
-
-const app = new Realm.App({ id: APP_ID });
+import app from '../realm/realmConfig';
 
 // Displays the given user's details
 function UserDetail({ user , onNavClick}) {
