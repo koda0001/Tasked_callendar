@@ -26,12 +26,20 @@ const MyCalendar = ({ events = [] }) => {
     const paddingDays = Array.from({ length: paddingDaysCount }, (_, i) => subDays(start, paddingDaysCount - i));
     return [...paddingDays, ...dates];
   };
+  const generateWeekViewDates = () => {
+    const start = startOfWeek(currentDate, { weekStartsOn: 1 });
+    const end = endOfWeek(currentDate, { weekStartsOn: 1 });
+    return eachDayOfInterval({ start, end });
+  };
 
   let datesToShow = [];
   if (view === 'month') {
     datesToShow = generateMonthViewDates();
   } // Extend with 'day' and 'week' views as necessary
 
+  if (view === 'week') {
+    datesToShow = generateWeekViewDates();
+  }
   // Filter events for displayed dates
   const eventsToShow = events.filter(event =>
     datesToShow.some(date => format(date, 'yyyy-MM-dd') === format(event.date, 'yyyy-MM-dd'))

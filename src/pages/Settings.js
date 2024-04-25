@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Modal from '../components/Modal';
-import LoginForm from '../components/LoginForm'; // Ensure this component handles the login logic
-import RegisterForm from '../components/RegisterForm'; // Ensure this component handles the registration logic
-import app from '../realm/realmConfig';  // Ensure this is correctly imported
+import LoginForm from '../components/LoginForm';
+import RegisterForm from '../components/RegisterForm';
+import DeleteAccountForm from '../components/DeleteAccountForm';
+import app from '../realm/realmConfig';
 
 function Login() {
     const [user, setUser] = useState(app.currentUser);
@@ -29,6 +30,10 @@ function Login() {
             <div className="user-settings">
                 <h1>Welcome, {user.profile.email || "User"}!</h1>
                 <button onClick={handleLogout}>Log out</button>
+                <button onClick={() => openModal(true)}>Delete account</button>
+                <Modal isOpen={showModal} close={closeModal}>
+                    <DeleteAccountForm setUser={setUser} close={closeModal} />
+                </Modal>
             </div>
         );
     }

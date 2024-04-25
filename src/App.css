@@ -3,8 +3,19 @@
 .Container {
   display: flex;
   flex-direction: row; /* Aligns nav and Home side by side */
-  width: 100vw;
   height: 100vh; /* Full viewport height */
+  box-sizing: border-box;
+}
+
+.errorMessage {
+  color: #D8000C; /* Red color for error messages */
+  background-color: #FFD2D2; /* Light red background */
+  padding: 10px 20px;
+  border-radius: 8px;
+  margin: 10px 0;
+  border: 1px solid #D8000C;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
 }
 
 nav {
@@ -13,6 +24,7 @@ nav {
   padding: 20px;
   display: flex;
   flex-direction: column; /* Stack links vertically */
+  box-sizing: border-box;
 }
 
 nav a {
@@ -23,6 +35,7 @@ nav a {
   background-color: #555;
   border-radius: 5px;
   text-align: center;
+  box-sizing: border-box;
 }
 
 nav a:hover {
@@ -30,10 +43,12 @@ nav a:hover {
 }
 
 .Home {
-  flex: 4; /* Takes 4 parts of the flex space */
-  padding: 20px;
-  overflow-y: auto; /* Allows scrolling */
+  flex: 8;
+  padding: 10px;
+  width: 10vw;
+  overflow-y: auto;
   background-color: #f4f4f4;
+  box-sizing: border-box;
 }
 
 /* Optional: Basic styling reset for body to remove default margin/padding */
