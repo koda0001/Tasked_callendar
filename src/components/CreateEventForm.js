@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import * as Realm from "realm-web";
 import app from '../realm/realmConfig';
+import styles from '../css/CreateEvent.modal.css';
+
 
 
 const CreateEvent = ({ date, close }) => {
@@ -17,7 +19,7 @@ const CreateEvent = ({ date, close }) => {
             ...eventData,
             [e.target.name]: e.target.value
         });
-        };
+    };
 
     const CreateEventOnDate = async (e) => {
         const userid = app.currentUser.id;
@@ -38,7 +40,7 @@ const CreateEvent = ({ date, close }) => {
                 body : JSON.stringify(bodyData)
             });
             if (!response.ok) {
-            throw new Error('Something went wrong!'); // Handling non-2xx responses
+            throw new Error('Something went wrong!');
             }
             const data = await response.json();
             console.log("Connected correctly to server");
@@ -47,7 +49,7 @@ const CreateEvent = ({ date, close }) => {
         }
         navigate('/');
         window.location.reload();
-};
+    };
 
 return (
     <form onSubmit={CreateEventOnDate}>

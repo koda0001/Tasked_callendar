@@ -11,9 +11,12 @@
   }
   
   .button {
-    margin-right: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
+    flex: 1; /* Takes 1 part of the flex space */
+    background-color: antiquewhite;
+    padding: 20px;
+    margin: 5px 0;
+    
+    border-radius: 5px;
   }
   
   .grid {
@@ -22,6 +25,11 @@
     gap: 10px;
     width: 100%;
     max-width: 100wv; /* Adjust based on your preference */
+  }
+
+  .grid :hover{
+    /* border: 2px solid blue; */
+    background-color: antiquewhite;
   }
   
   .dateCell {
@@ -35,12 +43,12 @@
   .event {
     margin-top: 5px;
     padding: 2px 5px;
-    background-color: #d1eaff;
+    background-color: antiquewhite;
     border-radius: 4px;
     font-size: 0.8rem;
   }
   
   .today {
-    border: 2px solid blue;
+    border: 2px solid rgb(232, 204, 119);
   }
   

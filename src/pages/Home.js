@@ -6,10 +6,14 @@ const Home = () => {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const userId = app.currentUser.id;
+  const userId = app.currentUser?.id;
 
   useEffect(() => {
     const fetchEvents = async () => {
+      if (!userId) {
+        setError('Please log in to see events');
+        return;
+      }
       setIsLoading(true);
       setError(null);
       try {

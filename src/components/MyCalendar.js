@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, addDays, addMonths, subMonths, getDay, subDays } from 'date-fns';
 import Modal from '../components/Modal';
-import CreateEvent from './CreateEventForm';
+import ManageEvents from './ManageEventsForm';
 import styles from '../css/MyCallendar.module.css'; // Update the path as needed
 
 const MyCalendar = ({ events = [] }) => {
@@ -68,7 +68,6 @@ const MyCalendar = ({ events = [] }) => {
         <button onClick={() => setView('month')} className={styles.button}>Month</button>
         <button onClick={() => changeDate(-1)} className={styles.button}>&lt; Prev</button>
         <button onClick={() => changeDate(1)} className={styles.button}>Next &gt;</button>
-        <p className={styles.showMonth}>{format(currentDate, 'MMMM yyyy')}</p>
       </div>
       <div className={styles.grid}>
         {datesToShow.map((date, index) => (
@@ -77,14 +76,14 @@ const MyCalendar = ({ events = [] }) => {
             {eventsToShow
               .filter(event => format(event.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
               .map((event, eventIndex) => (
-                <p key={eventIndex} className={styles.event}>{event.description}</p>
+                
+                <p key={eventIndex} className={styles.event}>{event.title}</p>
               ))}
           </div>
         ))}
       </div>
         <Modal isOpen={showModal} close={closeModal}>
-        <h2>Events on {formattedDate}</h2>
-          <CreateEvent date={formattedDate} close={closeModal} />
+          <ManageEvents events={events} date={formattedDate}/>
         </Modal>
     </div>
   );

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import * as Realm from "realm-web";
 import app from '../realm/realmConfig';
+import styles from '../css/RegisterForm.modal.css'; // import the styles
 
 // Displays the given user's details
 function UserDetail({ user , onNavClick}) {
