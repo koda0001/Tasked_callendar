@@ -19,6 +19,18 @@
     border-radius: 5px;
   }
   
+  .event {
+    margin-top: 5px;
+    padding: 2px 5px;
+    background-color: antiquewhite;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+
+  .event :hover{
+    
+  }
+  
   .grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr); /* 7 days a week */
@@ -29,7 +41,7 @@
 
   .grid :hover{
     /* border: 2px solid blue; */
-    background-color: antiquewhite;
+    background-color: rgb(131, 104, 236);
   }
   
   .dateCell {
@@ -40,14 +52,7 @@
     flex-direction: column;
   }
   
-  .event {
-    margin-top: 5px;
-    padding: 2px 5px;
-    background-color: antiquewhite;
-    border-radius: 4px;
-    font-size: 0.8rem;
-  }
-  
+
   .today {
     border: 2px solid rgb(232, 204, 119);
   }

@@ -1,6 +1,7 @@
 const Realm = require('realm-web');
 const express = require('express');
 const { MongoClient } = require("mongodb");
+const { ObjectId } = require('mongodb');
 require("dotenv").config({ path: "./config.env" });
 const realm = new Realm.App({ id: "application-0-tigozne" });
 const cors = require("cors");
@@ -57,7 +58,24 @@ async function main() {
       }
     });
 
-    // Start the server
+    exp.post('/api/updateevent', async (req, res) => {
+      try {
+        const eventId = req.headers.eventid;
+        const updates = req.body;
+        console.log('id: ', eventId)
+        console.log('body: ', updates)
+        const eventsCollection = db.collection('events');
+        await eventsCollection.updateOne(
+          { _id: new ObjectId(eventId) },
+          { $set: updates }
+        );
+        res.json({ message: "Event updated successfully" });
+      } catch (error) {
+        console.log("Error in adding event:", error);
+        res.status(500).json({ message: "Error adding event data", error });
+      }
+    });
+
     const port = 3002;
     exp.listen(port, () => console.log(`Server running on http://localhost:${port}`));
 

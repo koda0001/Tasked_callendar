@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { blueGrey } from '@mui/material/colors';
 import { useNavigate } from 'react-router-dom';
 import app from '../realm/realmConfig';
-import "../css/ManageEvents.modal.css"
+import "../css/AddEvents.modal.css"
 
 const formatTime = (minutesFromMidnight) => {
     const hours = Math.floor(minutesFromMidnight / 60);
@@ -36,24 +36,24 @@ function DayEventList({ events, date, index}) {
     endslot: '',
     title: '',
     description: ''
-});
-const eventSlots = events.filter(event => {
-    // Assuming `event.date` is in a comparable format or convert it to Date if necessary
-    const eventDate = new Date(event.date);
-    const eventToMatch = new Date(date);
-    return eventDate.toDateString() === eventToMatch.toDateString(); // Compares only the date part
-}).map(event => {
-    const startTime =  event.startslot;
-    const endTime =  event.endslot;
+    });
+    const eventSlots = events.filter(event => {
+        // Assuming `event.date` is in a comparable format or convert it to Date if necessary
+        const eventDate = new Date(event.date);
+        const eventToMatch = new Date(date);
+        return eventDate.toDateString() === eventToMatch.toDateString(); // Compares only the date part
+    }).map(event => {
+        const startTime =  event.startslot;
+        const endTime =  event.endslot;
 
-    const startTimeFormated = new Date(`${date}T${formatTime(event.startslot * 15).replace(/ /g, '').replace(':', 'H')}:00`);
-    const endTimeFormated = new Date(`${date}T${formatTime(event.endslot * 15).replace(/ /g, '').replace(':', 'H')}:00`);
+        const startTimeFormated = new Date(`${date}T${formatTime(event.startslot * 15).replace(/ /g, '').replace(':', 'H')}:00`);
+        const endTimeFormated = new Date(`${date}T${formatTime(event.endslot * 15).replace(/ /g, '').replace(':', 'H')}:00`);
     
-    // Convert start and end times to minutes from midnight
-    const startMinutes = startTimeFormated.getHours() * 60 + startTimeFormated.getMinutes();
-    const endMinutes = endTimeFormated.getHours() * 60 + endTimeFormated.getMinutes();
+        // Convert start and end times to minutes from midnight
+        const startMinutes = startTimeFormated.getHours() * 60 + startTimeFormated.getMinutes();
+        const endMinutes = endTimeFormated.getHours() * 60 + endTimeFormated.getMinutes();
 
-    console.log('Event start time: ', startTimeFormated);
+        console.log('Event start time: ', startTimeFormated);
     return {
         startSlot: startTime,
         endSlot: endTime,
@@ -62,6 +62,7 @@ const eventSlots = events.filter(event => {
         title: event.title
     };
 });
+
 useEffect(() => {
     eventSlots.forEach(slot => {
         console.log(`Event '${slot.title}' occupies slots from ${startSlot} to ${endSlot}`);
@@ -131,7 +132,7 @@ useEffect(() => {
             if (!response.ok) {
             throw new Error('Something went wrong!');
             }
-            const data = await response.json();
+            // const data = await response.json();
             console.log("Connected correctly to server");
         } catch (error) {
             console.error("Failed to add events:", error);

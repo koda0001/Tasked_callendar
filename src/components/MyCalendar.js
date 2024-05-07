@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, addDays, addMonths, subMonths, getDay, subDays } from 'date-fns';
 import Modal from '../components/Modal';
-import ManageEvents from './ManageEventsForm';
+import AddEvents from './AddEventsForm';
+import EditEvents from './EditEventsForm';
+
 import styles from '../css/MyCallendar.module.css'; // Update the path as needed
 
 const MyCalendar = ({ events = [] }) => {
   const [view, setView] = useState('month'); // Initial view
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const changeDate = (amount) => {
     if (view === 'day') {
@@ -20,15 +24,24 @@ const MyCalendar = ({ events = [] }) => {
     }
   };
 
-  const openModal = (date) => {
+  const openAddModal = (date) => {
     setSelectedDate(date);
-    setShowModal(true);
+    setShowAddModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedDate(null);
+  const closeAddModal = () => {
+    setShowAddModal(false);
+    setShowAddModal(null);
   };
+  const openEditModal = (event) => {
+    setSelectedEvent(event);
+    setShowEditModal(true);
+  };
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setSelectedEvent(null);  // Reset selected event on close
+  };
+
 
   const generateMonthViewDates = () => {
     const start = startOfMonth(currentDate);
@@ -71,20 +84,27 @@ const MyCalendar = ({ events = [] }) => {
       </div>
       <div className={styles.grid}>
         {datesToShow.map((date, index) => (
-          <div key={index} onClick={() => openModal(date)} className={`${styles.dateCell} ${format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? styles.today : ''}`}>
+          <div key={index} onClick={() => openAddModal(date)} className={`${styles.dateCell} ${format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? styles.today : ''}`}>
             <h3>{format(date, 'dd')}</h3>
             {eventsToShow
               .filter(event => format(event.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
               .map((event, eventIndex) => (
                 
-                <p key={eventIndex} className={styles.event}>{event.title}</p>
+                <p key={eventIndex} className={styles.event} onClick={(e) => {
+                  e.stopPropagation();  // Prevent the date cell click event
+                  openEditModal(event);
+                }}>{event.title}</p>
               ))}
           </div>
         ))}
       </div>
-        <Modal isOpen={showModal} close={closeModal}>
-          <ManageEvents events={events} date={formattedDate}/>
+        <Modal isOpen={showAddModal} close={closeAddModal}>
+          <AddEvents events={events} date={formattedDate}/>
         </Modal>
+        <Modal isOpen={showEditModal} close={closeEditModal}>
+         <EditEvents event={selectedEvent} date={formattedDate}/>
+        </Modal>
+
     </div>
   );
 };
