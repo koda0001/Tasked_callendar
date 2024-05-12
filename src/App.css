@@ -49,6 +49,8 @@ nav a:hover {
   overflow-y: auto;
   background-color: #f4f4f4;
   box-sizing: border-box;
+  overflow: hidden;
+
 }
 
 /* Optional: Basic styling reset for body to remove default margin/padding */
@@ -56,4 +58,5 @@ body, html {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
+  
 }

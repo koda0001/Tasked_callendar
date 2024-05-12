@@ -61,15 +61,14 @@ function DayEventList({ events, date, index}) {
         // endSlot: Math.ceil(endMinutes / 15) - 1,
         title: event.title
     };
-});
-
-useEffect(() => {
-    eventSlots.forEach(slot => {
-        console.log(`Event '${slot.title}' occupies slots from ${startSlot} to ${endSlot}`);
-        console.log(slot.date)
     });
-}, [events]);
 
+    useEffect(() => {
+        eventSlots.forEach(slot => {
+            console.log(`Event '${slot.title}' occupies slots from ${startSlot} to ${endSlot}`);
+            console.log(slot.date)
+        });
+    }, [events]);
 
     const handleMouseDown = (index) => {
         setDragStart(index); // Set the starting slot index

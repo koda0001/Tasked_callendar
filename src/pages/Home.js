@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MyCalendar from '../components/MyCalendar';
 import app from '../realm/realmConfig';
+import styles from '../css/Home.css'
 
 const Home = () => {
   const [events, setEvents] = useState([]);
@@ -47,12 +48,12 @@ const Home = () => {
   }, []);
 
   if (isLoading) return <div>Loading...</div>; // Loading state
-  if (error) return <div className={StyleSheet.errorMessage}>Please log in to see events </div>; // Error state
+  if (error) return <div className={StyleSheet.errorMessage}>Please log in to see events</div>; // Error state
 
   return (
     <div className="Container">
       <div className="Home">
-        <h1>My Calendar</h1>
+        {/* <h1>My Calendar</h1> */}
         <MyCalendar events={events} />
       </div>
     </div>

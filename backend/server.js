@@ -76,6 +76,21 @@ async function main() {
       }
     });
 
+    exp.post('/api/deleteevent', async (req, res) => {
+      try {
+        const eventId = req.headers.eventid;
+        console.log('id: ', eventId)
+        const eventsCollection = db.collection('events');
+        await eventsCollection.deleteOne(
+          { _id: new ObjectId(eventId) },
+        );
+        res.json({ message: "Event deleted successfully" });
+      } catch (error) {
+        console.log("Error in deleting event:", error);
+        res.status(500).json({ message: "Error deleting event ", error });
+      }
+    });
+
     const port = 3002;
     exp.listen(port, () => console.log(`Server running on http://localhost:${port}`));
 

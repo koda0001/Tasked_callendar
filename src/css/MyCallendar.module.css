@@ -1,59 +1,154 @@
-/* MyCalendar.module.css */
 .calendarContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-  }
-  
-  .controls {
-    margin-bottom: 20px;
-  }
-  
-  .button {
-    flex: 1; /* Takes 1 part of the flex space */
-    background-color: antiquewhite;
-    padding: 20px;
-    margin: 5px 0;
-    
-    border-radius: 5px;
-  }
-  
-  .event {
-    margin-top: 5px;
-    padding: 2px 5px;
-    background-color: antiquewhite;
-    border-radius: 4px;
-    font-size: 0.8rem;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  height: 60vw; /* Ensures the container fits according to viewport width */
+  padding: 10px;
+  background-color: #f9f9f9;
+}
 
-  .event :hover{
-    
-  }
-  
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr); /* 7 days a week */
-    gap: 10px;
-    width: 100%;
-    max-width: 100wv; /* Adjust based on your preference */
-  }
+.controls {
+  margin-bottom: 20px;
+  display: flex;
+  width: 100%; /* Fits the parent width */
+  justify-content: center;
+}
 
-  .grid :hover{
-    /* border: 2px solid blue; */
-    background-color: rgb(131, 104, 236);
-  }
-  
-  .dateCell {
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-  }
-  
+.weekContainer {
+  display: flex;
+  flex-direction: column; /* Adjusted to row for horizontal layout */
+  align-items: stretch;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  overflow-x: auto; /* Enable horizontal scrolling if needed */
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  width: 100%;
+  max-height: 85vh;
+}
 
-  .today {
-    border: 2px solid rgb(232, 204, 119);
-  }
-  
+.button {
+  flex: 1;
+  background-color: #d8d8d8;
+  padding: 10px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.event {
+  margin-top: 5px;
+  padding: 5px 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.event:hover {
+  background-color: #e2e2e2;
+}
+
+.gridweek {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  overflow-x: auto; 
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  overflow-x: auto; /* Enable horizontal scrolling if needed */
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.dateCell {
+  padding: 5px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+
+.dayLegend {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+  height: fit-content;
+  width: 100%;
+  max-width: 100%;
+  background: #f0f0f0; /* Moved background color here */
+}
+.space{
+  width: 50px;
+}
+
+.timeLegend {
+  display: flex;
+  flex-direction: column;
+  background: #f0f0f0;
+  width: 50px; /* Ensure consistent width for the time legend column */
+}
+
+.timedayscontainer {
+  display: flex;
+  flex-direction: column; /* Adjusted to column for vertical layout */
+  flex-grow: 1; /* Allow container to grow */
+}
+
+.dayView, .weekView, .weekDays {
+  max-height: 700px;
+}
+
+.timeSlot {
+  height: 11px;
+  padding: 2px;
+  border-bottom: solid 1px #c6c6c6;
+  /* box-sizing: border-box; */
+}
+.timeLabel {
+  height: 100%;
+  padding: 2px;
+  width: 6vw;
+  max-width: 6vw;
+  border-bottom: solid 1px #c6c6c6;
+  box-sizing: border-box;
+}
+
+.TDays {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+}
+
+.dateColumn {
+  display: flex;
+  flex-direction: column;
+  width: 9vw;
+  flex-grow: 1; /* Ensures all columns expand evenly */
+}
+
+.dayColumn {
+  border-right: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  width: 9vw;
+
+}
+
+.today {
+  border: 2px solid #e8cc77;
+  background-color: #fffbea;
+}
+
+.dateCell:hover {
+  background-color: #f4f4f4;
+}

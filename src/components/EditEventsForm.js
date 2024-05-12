@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 import app from '../realm/realmConfig';
 
 const formatTime = (slot) => {
@@ -17,6 +18,7 @@ const parseTimeToSlot = (timeString) => {
 };
 
 function EditEvents({ event }) {
+  const navigate = useNavigate();
   const [eventdate, setDate] = useState(() => format(event.date, 'yyyy-MM-dd'));
   const [startTime, setStartTime] = useState(() => formatTime(event.startslot));
   const [endTime, setEndTime] = useState(() => formatTime(event.endslot));
@@ -80,13 +82,31 @@ function EditEvents({ event }) {
       } catch (error) {
         console.error("Failed to add events:", error);
 
-  }
-
+      }
+      navigate('/');
+      window.location.reload();
   };
 
-  const deleteEvent = () => {
-
-  }
+  const deleteEvent = async () => {
+    const eventid = event._id
+    const userid = app.currentUser.id;
+    try {
+      const response = await fetch('http://localhost:3002/api/deleteevent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': userid,
+          'eventid' : eventid      
+        },
+        });
+        // const data = await response.json();
+        console.log("Connected correctly to server");
+      } catch (error) {
+        console.error("Failed to add events:", error);
+    }
+    navigate('/');
+    window.location.reload();
+  };
 
   if (!event) return null;
 
