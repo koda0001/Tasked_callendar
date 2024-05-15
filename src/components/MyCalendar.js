@@ -3,10 +3,13 @@ import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInte
 import Modal from '../components/Modal';
 import AddEvents from './AddEventsForm';
 import EditEvents from './EditEventsForm';
+import { blueGrey } from '@mui/material/colors';
+
 
 import styles from '../css/MyCallendar.module.css';
+import { da } from 'date-fns/locale/da';
 
-const MyCalendar = ({ events = [] }) => {
+const MyCalendar = ({ index, date, events = [] }) => {
   const [view, setView] = useState('week');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showEditModal, setShowEditModal] = useState(false);
@@ -16,10 +19,55 @@ const MyCalendar = ({ events = [] }) => {
   const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
   const [timeSelectionStart, setTimeSelectionStart] = useState(null);
   const [timeSelectionEnd, setTimeSelectionEnd] = useState(null);
-
+  const totalSlots = 96;
+  const [selectedRange, setSelectedRange] = useState(null);
   const [dragStart, setDragStart] = useState(null);
+  const [dragColumnDate, setDragColumnDate] = useState(null);
+  const [eventData, setEventData] = useState({
+    date: date, // use the date passed as prop
+    startdate: '',
+    enddate: '',
+    startslot: '',
+    endslot: '',
+    title: '',
+    description: ''
+    });
 
+  const formatTime = (minutesFromMidnight) => {
+    const hours = Math.floor(minutesFromMidnight / 60);
+    const minutes = minutesFromMidnight % 60;
+    const paddedHours = hours % 24;
+    const paddedMinutes = minutes.toString().padStart(2, '0');
+    const suffix = paddedHours >= 12 ? 'PM' : 'AM';
+    const formattedHour = paddedHours > 12 ? paddedHours - 12 : paddedHours === 0 ? 12 : paddedHours;
+    return `${formattedHour}:${paddedMinutes} ${suffix}`;
+  };
 
+  const eventSlots = events.filter(event => {
+    // Assuming `event.date` is in a comparable format or convert it to Date if necessary
+    const eventDate = new Date(event.date);
+    const eventToMatch = new Date(date);
+    return eventDate.toDateString() === eventToMatch.toDateString(); // Compares only the date part
+  }).map(event => { 
+    const startTime =  event.startslot;
+    const endTime =  event.endslot;
+
+    const startTimeFormated = new Date(`${date}T${formatTime(event.startslot * 15).replace(/ /g, '').replace(':', 'H')}:00`);
+    const endTimeFormated = new Date(`${date}T${formatTime(event.endslot * 15).replace(/ /g, '').replace(':', 'H')}:00`);
+
+    // Convert start and end times to minutes from midnight
+    const startMinutes = startTimeFormated.getHours() * 60 + startTimeFormated.getMinutes();
+    const endMinutes = endTimeFormated.getHours() * 60 + endTimeFormated.getMinutes();
+
+    console.log('Event start time: ', startTimeFormated);
+  return {
+    startSlot: startTime,
+    endSlot: endTime,
+    // startSlot: Math.floor(startMinutes / 15),
+    // endSlot: Math.ceil(endMinutes / 15) - 1,
+    title: event.title
+  };
+  });
 
   const changeDate = (amount) => {
     if (view === 'day') {
@@ -71,9 +119,9 @@ const MyCalendar = ({ events = [] }) => {
     return slots;
   };  
   
-  const handleMouseDown = (time) => {
-    setTimeSelectionStart(time);
-    setTimeSelectionEnd(time); // Initially, start and end are the same
+  const handleMouseDown = (index) => {
+    setDragStart(index); 
+    // console.log(index);
   };
   
   const handleMouseEnter = (time) => {
@@ -82,14 +130,32 @@ const MyCalendar = ({ events = [] }) => {
     }
   };
   
-  const handleMouseUp = () => {
-    if (timeSelectionStart && timeSelectionEnd) {
-      // Here you can trigger modal opening or directly add the event
-      openAddModal(timeSelectionStart);
-      // Reset selection
-      setTimeSelectionStart(null);
-      setTimeSelectionEnd(null);
-    }
+  const handleMouseUp = (index, date) => {
+    if (dragStart !== null) {
+      const startSlot = Math.min(dragStart, index);
+      const endSlot = Math.max(dragStart, index);
+      setDragColumnDate(format(date, 'dd-MM')); // Store the column's date
+      // console.log('start slot is ',startSlot)
+      // console.log('end slot is ',endSlot)      
+      // console.log('date clicked is:', format(date, 'dd-MM'))
+
+      // Calculate the new dates
+      const newEventStartDateTime = `${date}T${formatTime(startSlot * 15).replace(/ /g, '').replace(':', 'H')}:00`;
+      const newEventEndDateTime = `${date}T${formatTime((endSlot + 1) * 15).replace(/ /g, '').replace(':', 'H')}:00`;
+
+      // Update eventData directly here
+      setEventData(prevData => ({
+          ...prevData,
+          date: format(date, 'yyyy-MM-dd'),
+          startdate: newEventStartDateTime,
+          enddate: newEventEndDateTime,
+          startslot: startSlot,
+          endslot: endSlot
+      }));
+
+      setSelectedRange({ start: startSlot, end: endSlot });
+      setDragStart(null);
+  }
   };
   
 
@@ -118,7 +184,20 @@ const MyCalendar = ({ events = [] }) => {
     }
     return timeslots;
   };
-
+  const getSlotStyle = (indexdate) => {
+    const [index, date] = indexdate.split(',');
+    let style = { backgroundColor: 'white', border: '1px solid black' };
+  
+    if (selectedRange && index >= selectedRange.start && index <= selectedRange.end && dragColumnDate === date) {
+      style.backgroundColor = blueGrey[100];
+    }
+  
+    return style;
+  };
+  
+  
+  
+  
   const renderWeekView = () => {
     const dates = generateWeekViewDates();
     const timelegendslots = generateFullHourTimeSlots(new Date());
@@ -127,13 +206,14 @@ const MyCalendar = ({ events = [] }) => {
     return (
       <div className={styles.weekContainer}>
         <div className={styles.dayLegend}>
-        <div className={styles.space}></div>
-          {/* Render day names */}
-          {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day, index) => (
-            <div key={index} className={styles.dateColumn}>
-              <h3>{day}</h3>
+        <div className={styles.space }></div>
+        {dates.map((date, dateIndex) => ( 
+            <div key={dateIndex} className={styles.dateColumn}>
+              <h3 >{format(date, 'dd.MM')}</h3>
+              <h3 >{format(date, 'eee')}</h3>
             </div>
           ))}
+          
         </div>
         <div className={styles.gridweek}>
           {/* Render time legend */}
@@ -145,19 +225,24 @@ const MyCalendar = ({ events = [] }) => {
             ))}
           </div>
           {/* Render time slots for each day */}
-          {dates.map((date, dateIndex) => (
-            <div key={dateIndex} className={styles.dayColumn}>
-              {timeSlots.map((time, timeIndex) => (
-                <div
-                  key={timeIndex}
-                  className={styles.timeSlot}
-                  onMouseDown={() => handleMouseDown(time)}
-                  onMouseEnter={() => handleMouseEnter(time)}
-                  onMouseUp={handleMouseUp}
-                >
-                  {/* Display time slot content here if needed */}
-                </div>
-              ))}
+          {dates.map((date, dateIndex) => ( 
+            <div key={dateIndex} className={`${styles.dayColumn} ${format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? styles.todayweek : ''}`}>
+              {Array.from({ length: totalSlots }, (_, index) => {
+                    const minutesFromMidnight = index * 15;
+                    const indexdate = `${index},${format(date, 'dd-MM')}`
+                    // const timeLabel = formatTime(minutesFromMidnight);
+                    return (
+                        <div
+                        key={indexdate}
+                        className="slot"
+                        onMouseDown={() => handleMouseDown(index)}
+                        onMouseUp={() => handleMouseUp(index, date)}
+                        style={getSlotStyle(indexdate)}
+                        >
+                          .
+                        </div>
+                    );
+                })}
             </div>
           ))}
         </div>

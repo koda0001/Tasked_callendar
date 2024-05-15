@@ -130,9 +130,6 @@
 }
 
 .dateColumn {
-  display: flex;
-  flex-direction: column;
-  width: 9vw;
   flex-grow: 1; /* Ensures all columns expand evenly */
 }
 
@@ -141,12 +138,19 @@
   display: flex;
   flex-direction: column;
   width: 9vw;
-
+  user-select: none; /* Standard syntax */
+  -moz-user-select: none; /* Firefox */
+  -webkit-user-select: none; /* Safari and Chrome */
+  -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
 .today {
   border: 2px solid #e8cc77;
   background-color: #fffbea;
+}
+
+.todayweek {
+  border: 2px solid #e8cc77;
 }
 
 .dateCell:hover {
