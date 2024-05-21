@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, addDays, addMonths, subMonths, addMinutes, addHours, getDay, subDays } from 'date-fns';
 import Modal from '../components/Modal';
 import AddEvents from './AddEventsForm';
+import AddWeekEvents from './AddEventsWeekForm';
 import EditEvents from './EditEventsForm';
 import { blueGrey } from '@mui/material/colors';
-
-
 import styles from '../css/MyCallendar.module.css';
 import { da } from 'date-fns/locale/da';
 
@@ -14,15 +13,20 @@ const MyCalendar = ({ index, date, events = [] }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showAddWeekModal, setShowAddWeekModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
   const [timeSelectionStart, setTimeSelectionStart] = useState(null);
   const [timeSelectionEnd, setTimeSelectionEnd] = useState(null);
   const totalSlots = 96;
+  const startSlot = Math.min(index);
+  const endSlot = Math.max(index);
   const [selectedRange, setSelectedRange] = useState(null);
   const [dragStart, setDragStart] = useState(null);
   const [dragColumnDate, setDragColumnDate] = useState(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [eventData, setEventData] = useState({
     date: date, // use the date passed as prop
     startdate: '',
@@ -42,6 +46,36 @@ const MyCalendar = ({ index, date, events = [] }) => {
     const formattedHour = paddedHours > 12 ? paddedHours - 12 : paddedHours === 0 ? 12 : paddedHours;
     return `${formattedHour}:${paddedMinutes} ${suffix}`;
   };
+
+  useEffect(() => {
+    eventSlots.forEach(slot => {
+        console.log(`Event '${slot.title}' occupies slots from ${startSlot} to ${endSlot}`);
+        console.log(slot.date)
+    });
+}, [events]);
+
+  const updateMousePosition = (e) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
+
+  useEffect(() => {
+    window.addEventListener('mousemove', updateMousePosition);
+
+    return () => {
+      window.removeEventListener('mousemove', updateMousePosition);
+    };
+  }, []);
+
+  const calculateModalPosition = () => {
+    // Adjust these values as needed
+    const offsetX = 20; // Distance from mouse pointer
+    const offsetY = 20; // Distance from mouse pointer
+
+    const modalX = mousePosition.x + offsetX;
+    const modalY = mousePosition.y + offsetY;
+
+    return { x: modalX, y: modalY };
+};
 
   const eventSlots = events.filter(event => {
     // Assuming `event.date` is in a comparable format or convert it to Date if necessary
@@ -63,11 +97,28 @@ const MyCalendar = ({ index, date, events = [] }) => {
   return {
     startSlot: startTime,
     endSlot: endTime,
-    // startSlot: Math.floor(startMinutes / 15),
-    // endSlot: Math.ceil(endMinutes / 15) - 1,
     title: event.title
   };
   });
+
+  const getWeeklyEventSlots = (startDate, endDate) => {
+    const eventSlots = {};
+    for (let d = startDate; d <= endDate; d = addDays(d, 1)) {
+      const dateStr = format(d, 'yyyy-MM-dd');
+      eventSlots[dateStr] = {};
+      events.forEach(event => {
+        if (format(new Date(event.date), 'yyyy-MM-dd') === dateStr) {
+          for (let slot = event.startslot; slot <= event.endslot; slot++) {
+            eventSlots[dateStr][slot] = {
+              title: slot === event.startslot ? event.title : null
+            };
+          }
+        }
+      });
+    }
+    return eventSlots;
+  };
+  
 
   const changeDate = (amount) => {
     if (view === 'day') {
@@ -88,6 +139,18 @@ const MyCalendar = ({ index, date, events = [] }) => {
     setShowAddModal(false);
     setSelectedDate(null);
   };
+  // Function to handle opening AddWeekEvents modal
+  const openAddWeekModal = (date) => {
+    setSelectedDate(date);
+    setShowAddWeekModal(true);
+  };
+
+  // Function to close AddWeekEvents modal
+  const closeAddWeekModal = () => {
+    setShowAddWeekModal(false);
+    setSelectedDate(null);
+  };
+
 
   const openEditModal = (event) => {
     setSelectedEvent(event);
@@ -139,6 +202,12 @@ const MyCalendar = ({ index, date, events = [] }) => {
       // console.log('end slot is ',endSlot)      
       // console.log('date clicked is:', format(date, 'dd-MM'))
 
+      const offsetX = 20; // Distance from mouse pointer
+      const offsetY = 20; // Distance from mouse pointer
+  
+      const modalX = mousePosition.x + offsetX;
+      const modalY = mousePosition.y + offsetY;
+
       // Calculate the new dates
       const newEventStartDateTime = `${date}T${formatTime(startSlot * 15).replace(/ /g, '').replace(':', 'H')}:00`;
       const newEventEndDateTime = `${date}T${formatTime((endSlot + 1) * 15).replace(/ /g, '').replace(':', 'H')}:00`;
@@ -155,9 +224,13 @@ const MyCalendar = ({ index, date, events = [] }) => {
 
       setSelectedRange({ start: startSlot, end: endSlot });
       setDragStart(null);
+
+      setModalPosition({ x: modalX, y: modalY });
+      console.log('modal pos', modalPosition);
+     
+
   }
   };
-  
 
   const generateMonthViewDates = () => {
     const start = startOfMonth(currentDate);
@@ -184,36 +257,53 @@ const MyCalendar = ({ index, date, events = [] }) => {
     }
     return timeslots;
   };
+
   const getSlotStyle = (indexdate) => {
     const [index, date] = indexdate.split(',');
-    let style = { backgroundColor: 'white', border: '1px solid black' };
-  
+    let style = { backgroundColor: 'white', border: '1px solid black' , height: '15px'};
+
     if (selectedRange && index >= selectedRange.start && index <= selectedRange.end && dragColumnDate === date) {
       style.backgroundColor = blueGrey[100];
     }
-  
+    eventSlots.forEach(slot => {
+      if (index >= slot.startSlot && index <= slot.endSlot) {
+        style.backgroundColor = blueGrey[300]; // Adjust the color to indicate the slot is taken
+      }
+    });
     return style;
   };
   
-  
-  
+
+  const modalStyle = {
+    position: 'fixed',
+    top: modalPosition.y,
+    left: modalPosition.x,
+    transform: 'translate(-50%, -50%)', // Center the modal
+    backgroundColor: 'white',
+    border: '1px solid black',
+    padding: '20px',
+    width: '200px',
+    height: '300px',
+    zIndex: 9999, // Ensure the modal is on top of other elements
+  };
   
   const renderWeekView = () => {
     const dates = generateWeekViewDates();
     const timelegendslots = generateFullHourTimeSlots(new Date());
-    const timeSlots = timemap(new Date());
+    const startDate = startOfWeek(currentDate, { weekStartsOn: 1 });
+    const endDate = endOfWeek(currentDate, { weekStartsOn: 1 });
+    const weeklyEventSlots = getWeeklyEventSlots(startDate, endDate);
   
     return (
       <div className={styles.weekContainer}>
         <div className={styles.dayLegend}>
-        <div className={styles.space }></div>
-        {dates.map((date, dateIndex) => ( 
+          <div className={styles.space}></div>
+          {dates.map((date, dateIndex) => (
             <div key={dateIndex} className={styles.dateColumn}>
-              <h3 >{format(date, 'dd.MM')}</h3>
-              <h3 >{format(date, 'eee')}</h3>
+              <h3>{format(date, 'dd.MM')}</h3>
+              <h3>{format(date, 'eee')}</h3>
             </div>
           ))}
-          
         </div>
         <div className={styles.gridweek}>
           {/* Render time legend */}
@@ -225,32 +315,39 @@ const MyCalendar = ({ index, date, events = [] }) => {
             ))}
           </div>
           {/* Render time slots for each day */}
-          {dates.map((date, dateIndex) => ( 
-            <div key={dateIndex} className={`${styles.dayColumn} ${format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? styles.todayweek : ''}`}>
-              {Array.from({ length: totalSlots }, (_, index) => {
-                    const minutesFromMidnight = index * 15;
-                    const indexdate = `${index},${format(date, 'dd-MM')}`
-                    // const timeLabel = formatTime(minutesFromMidnight);
-                    return (
-                        <div
-                        key={indexdate}
-                        className="slot"
-                        onMouseDown={() => handleMouseDown(index)}
-                        onMouseUp={() => handleMouseUp(index, date)}
-                        style={getSlotStyle(indexdate)}
-                        >
-                          .
-                        </div>
-                    );
+          {dates.map((date, dateIndex) => {
+            const dateStr = format(date, 'yyyy-MM-dd');
+            return (
+              <div
+                key={dateIndex}
+                onClick={() => openAddWeekModal(date)}
+                className={`${styles.dayColumn} ${dateStr === format(new Date(), 'yyyy-MM-dd') ? styles.todayweek : ''}`}
+              >
+                {Array.from({ length: totalSlots }, (_, index) => {
+                  const indexdate = `${index},${format(date, 'dd-MM')}`;
+                  const isSlotTaken = weeklyEventSlots[dateStr] && weeklyEventSlots[dateStr][index];
+                  const slotStyle = getSlotStyle(indexdate);
+                  return (
+                    <div
+                      key={indexdate}
+                      className="slot"
+                      onMouseDown={() => handleMouseDown(index)}
+                      onMouseUp={() => handleMouseUp(index, date)}
+                      style={slotStyle}
+                    >
+                      {isSlotTaken && isSlotTaken.title && <span className={styles.eventTitle}>{isSlotTaken.title}</span>}
+                    </div>
+                  );
                 })}
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </div>
       </div>
     );
   };
   
-  
+
   
   
   
@@ -275,8 +372,6 @@ const MyCalendar = ({ index, date, events = [] }) => {
     );
   };
   
-  
-
   const renderMonthView = () => {
     const dates = generateMonthViewDates();
     return (
@@ -322,6 +417,9 @@ const MyCalendar = ({ index, date, events = [] }) => {
       {renderCalendarView()}
       <Modal isOpen={showAddModal} close={closeAddModal}>
         <AddEvents events={events} date={formattedDate}/>
+      </Modal>
+      <Modal isOpen={showAddWeekModal} close={closeAddWeekModal} className="modal">
+        <AddWeekEvents events={events} date={formattedDate} data={eventData} position={modalPosition} />
       </Modal>
       <Modal isOpen={showEditModal} close={closeEditModal}>
         <EditEvents event={selectedEvent} date={formattedDate}/>

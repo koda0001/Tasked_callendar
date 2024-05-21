@@ -14,26 +14,44 @@ const formatTime = (minutesFromMidnight) => {
     return `${formattedHour}:${paddedMinutes} ${suffix}`;
 };
 
-function DayEventList({ events, date, data, position}) {
+function DayEventList({ events, date, index, position}) {
     const navigate = useNavigate();
     const totalSlots = 96;
     const [dragStart, setDragStart] = useState(null);
     const [selectedRange, setSelectedRange] = useState(null);
     const containerHeight = 600; // Height of the scrollable container in pixels
-    const newEventStartDateTime = `${date}T${formatTime(data.startslot * 15).replace(/ /g, '').replace(':', 'H')}:00`;
-    const newEventEndDateTime = `${date}T${formatTime((data.endslot + 1) * 15).replace(/ /g, '').replace(':', 'H')}:00`;
+    const startSlot = Math.min(dragStart, index);
+    const endSlot = Math.max(dragStart, index);
+    const startMinutesFromMidnight = startSlot * 15;
+    const endMinutesFromMidnight = (endSlot + 1) * 15;
+    const offsetpositionY = position.y;
+    const offsetpositionX = position.x -200;
+
     // const eventStartDateTime = `${date}T${formatTime(startMinutesFromMidnight).replace(/ /g, '').replace(':', 'H')}:00`;
     // const eventEndDateTime = `${date}T${formatTime(endMinutesFromMidnight).replace(/ /g, '').replace(':', 'H')}:00`;
     const [eventData, setEventData] = useState({
-    date: data.date, // use the date passed as prop
-    startdate: newEventStartDateTime,
-    enddate: newEventEndDateTime,
-    startslot: data.startslot,
-    endslot: data.endslot,
+    date: date, // use the date passed as prop
+    startdate: '',
+    enddate: '',
+    startslot: '',
+    endslot: '',
     title: '',
     description: ''
     });
 
+    const modalStyle = {
+        position: 'fixed',
+        // top: offsetpositionY,
+        // left: offsetpositionX,
+        transform: 'translate(-50%, -50%)',
+        backgroundColor: 'white',
+        border: '1px solid black',
+        padding: '20px',
+        width: '500px',
+        height: '300px',
+        // zIndex: 9999,
+    };
+    
 
     const handleInputChange = (e) => {
         setEventData({
@@ -77,51 +95,50 @@ function DayEventList({ events, date, data, position}) {
         window.location.reload();
     };
 
-    return (
-        
-        
-
-        <div style={{height: `${containerHeight}px`}}className="Container">
-        
-        <div>
-            <h1>Event on: {date}</h1>
-            <p>From: {formatTime(data.startslot*15)}</p>
-            <p>To: {formatTime(data.endslot*15)}</p>
-                {selectedRange && (
-                    <div>
-                        <p onChange={handleInputChange}>Start Time: {formatTime(selectedRange.start * 15)}</p>
-                        <p onChange={handleInputChange}>End Time: {formatTime((selectedRange.end + 1) * 15)}</p>
-                    </div>
-
-                )}
-            <div>
-            <label htmlFor="title">Title (max 20 chars):</label>
-            <input
-                type="text"
-                id="title"
-                name="title"
-                maxLength="20"
-                value={eventData.title}
-                onChange={handleInputChange}
-                />
-            </div>
-            <div>
-            <label htmlFor="description">Description (max 200 chars):</label>
-            <textarea
-                id="description"
-                name="description"
-                maxLength="200"
-                value={eventData.description}
-                onChange={handleInputChange}
-                />
-            </div>
-            <button onClick={CreateEventOnDate}>Save Event</button>
-        </div>
-        </div>
-        
-    );
     
 
-}
+    
+    
+ 
+        return (
+            <div style={modalStyle} className={"Container"}>
+            <div>
+                <h1>Event on: {date}</h1>
+                    {selectedRange && (
+                        <div>
+                            <p onChange={handleInputChange}>Start Time: {formatTime(selectedRange.start * 15)}</p>
+                            <p onChange={handleInputChange}>End Time: {formatTime((selectedRange.end + 1) * 15)}</p>
+                        </div>
+
+                    )}
+                <div>
+                <label htmlFor="title">Title (max 20 chars):</label>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    maxLength="20"
+                    value={eventData.title}
+                    onChange={handleInputChange}
+                    />
+                </div>
+                <div>
+                <label htmlFor="description">Description (max 200 chars):</label>
+                <textarea
+                    id="description"
+                    name="description"
+                    maxLength="200"
+                    value={eventData.description}
+                    onChange={handleInputChange}
+                    />
+                </div>
+                <button onClick={CreateEventOnDate}>Save Event</button>
+            </div>
+            </div>
+        );
+    }
+
+
+
 
 export default DayEventList;

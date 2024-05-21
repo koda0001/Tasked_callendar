@@ -1,0 +1,27 @@
+.modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(200, 77, 77);
+    border: 1px solid black;
+    padding: 20px;
+    width: 100px; /* Adjust as needed */
+    height: 100px; /* Adjust as needed */
+    z-index: 1000; /* Ensure the modal is on top of other content */
+  }
+  
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 999; /* Ensure the overlay is behind the modal */
+  }
+  
+  .content {
+    /* Add any additional styles for the content inside the modal */
+  }
+  
