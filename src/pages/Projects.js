@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../components/Modal';
 import app from '../realm/realmConfig';
+import EditEvents from '../components/EditEventsForm';
 import { format } from 'date-fns';
 import '../css/Projects.css';
 
 function Projects() {
   const [projects, setProjects] = useState([]);
   const [events, setEvents] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +23,17 @@ function Projects() {
     events: ['',''],
   });
   const userId = app.currentUser?.id;
-  const date = format(new Date(), 'yyyy-MM-dd');
+  const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
+
+  const openEditModal = (event) => {
+    setSelectedEvent(event);
+    setShowEditModal(true);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setSelectedEvent(null);
+  };
 
   const fetchProjects = async () => {
     if (!userId) {
@@ -147,7 +161,9 @@ function Projects() {
               <h4>Linked Events</h4>
               <ul>
                 {events.filter(event => event.linkedProject === project._id).map((event, index) => (
-                  <li key={index}>{event.title}</li>
+                  <li key={index}>
+                    <button onClick={(e) => { e.stopPropagation(); openEditModal(event); }}>{event.title}</button>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -181,6 +197,9 @@ function Projects() {
           <button type="submit">Save Project</button>
           <button type="button" onClick={handleCloseModal}>Cancel</button>
         </form>
+      </Modal>
+      <Modal isOpen={showEditModal} close={closeEditModal} onRequestClose={closeEditModal} contentLabel="Edit Event Modal">
+        <EditEvents event={selectedEvent} date={formattedDate}/>
       </Modal>
     </div>
   );

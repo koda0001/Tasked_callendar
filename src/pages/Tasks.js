@@ -8,10 +8,13 @@ import '../css/Tasks.css';
 function Tasks() {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
+  const [events, setEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [errorEvents, setErrorEvents] = useState(null);
+  const [isLoadingEvents, setIsLoadingEvents] = useState(false);
   const date = format(new Date(), 'yyyy-MM-dd');
   const userId = app.currentUser?.id;
   const [currentTask, setCurrentTask] = useState({
@@ -19,10 +22,11 @@ function Tasks() {
     title: '',
     content: '',
     status: 'In progress', // Default status
+    linkedEvent: null // Initialize linkedEvent as null
   });
 
   useEffect(() => {
-    const fetchNotes = async () => {
+    const fetchTasks = async () => {
       if (!userId) {
         setError('Please log in to see tasks');
         return;
@@ -37,17 +41,16 @@ function Tasks() {
           }
         });
         if (!response.ok) {
-          throw new Error('Something went wrong!'); // Handling non-2xx responses
+          throw new Error('Something went wrong!');
         }
         const data = await response.json();
         console.log("Connected correctly to server");
 
-        const formattedNotes = data.map(event => ({
-          ...event,
-          date: new Date(event.date) // Ensuring date is converted to Date object
+        const formattedTasks = data.map(task => ({
+          ...task,
+          date: new Date(task.date)
         }));
-
-        setTasks(formattedNotes);
+        setTasks(formattedTasks);
       } catch (error) {
         console.error("Failed to fetch tasks:", error);
         setError(error.toString());
@@ -56,7 +59,39 @@ function Tasks() {
       }
     };
 
-    fetchNotes();
+    fetchTasks();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      if (!userId) {
+        setErrorEvents('Please log in to see events');
+        return;
+      }
+      setIsLoadingEvents(true);
+      setErrorEvents(null);
+      try {
+        const response = await fetch(`http://localhost:3002/api/events?userId=${userId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${userId}`
+          }
+        });
+        if (!response.ok) {
+          throw new Error('Something went wrong!');
+        }
+        const data = await response.json();
+        setEvents(data);
+        setErrorEvents(null);
+      } catch (error) {
+        console.error("Failed to fetch events:", error);
+        setErrorEvents(error.toString());
+      } finally {
+        setIsLoadingEvents(false);
+      }
+    };
+
+    fetchEvents();
   }, [userId]);
 
   const createOrUpdateTasks = async (e) => {
@@ -69,7 +104,8 @@ function Tasks() {
       date: currentTask.date,
       title: currentTask.title,
       content: currentTask.content,
-      status: currentTask.status, // Add status to the request body
+      status: currentTask.status,
+      linkedEvent: currentTask.linkedEvent // Include linkedEvent in the request body
     };
 
     try {
@@ -78,7 +114,7 @@ function Tasks() {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': userid,
-          'taskid': tasksid // Correctly set the task ID header
+          'taskid': tasksid
         },
         body: JSON.stringify(bodyData),
       });
@@ -91,7 +127,7 @@ function Tasks() {
       handleCloseModal();
       setIsLoading(true);
       setError(null);
-      const fetchUpdatedNotes = async () => {
+      const fetchUpdatedTasks = async () => {
         try {
           const response = await fetch(`http://localhost:3002/api/tasks?userId=${userId}`, {
             headers: {
@@ -100,12 +136,12 @@ function Tasks() {
             }
           });
           if (!response.ok) {
-            throw new Error('Something went wrong!'); // Handling non-2xx responses
+            throw new Error('Something went wrong!');
           }
           const data = await response.json();
-          const formattedTasks = data.map(tasks => ({
-            ...tasks,
-            date: new Date(tasks.date) // Ensuring date is converted to Date object
+          const formattedTasks = data.map(task => ({
+            ...task,
+            date: new Date(task.date)
           }));
           setTasks(formattedTasks);
         } catch (error) {
@@ -115,7 +151,7 @@ function Tasks() {
           setIsLoading(false);
         }
       };
-      fetchUpdatedNotes();
+      fetchUpdatedTasks();
     } catch (error) {
       console.error("Failed to save tasks:", error);
     }
@@ -129,7 +165,7 @@ function Tasks() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setCurrentTask({ date: date, title: '', content: '', status: 'In progress' });
+    setCurrentTask({ date: date, title: '', content: '', status: 'In progress', linkedEvent: null });
   };
 
   return (
@@ -166,12 +202,23 @@ function Tasks() {
             <option value="Done">Done</option>
             <option value="Canceled">Canceled</option>
           </select>
-          <button type="submit">Save Task</button>
-          <button type="button" onClick={handleCloseModal}>Cancel</button>
-        </form>
-      </Modal>
-    </div>
-  );
-};
-
-export default Tasks;
+          <select
+              value={currentTask.linkedEvent}
+              onChange={(e) => setCurrentTask({ ...currentTask, linkedEvent: e.target.value })}
+            >
+              <option value="">Select an event...</option>
+              {events.map(event => (
+                <option key={event._id} value={event._id}>
+                  {event.title}
+                </option>
+              ))}
+            </select>
+            <button type="submit">Save Task</button>
+            <button type="button" onClick={handleCloseModal}>Cancel</button>
+          </form>
+        </Modal>
+      </div>
+    );
+  };
+  
+  export default Tasks;

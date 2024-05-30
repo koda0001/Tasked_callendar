@@ -88,7 +88,7 @@ async function main() {
 
     exp.post('/api/addevent', async (req, res) => {
       try {
-        const { userid, date, startdate, enddate, startslot, endslot, title, description } = req.body; // Extracting from the body now
+        const { userid, date, startdate, enddate, startslot, endslot, title, description, linkedProject } = req.body; // Extracting from the body now
         const eventsCollection = db.collection('events');
         await eventsCollection.insertOne({
           userid: userid,
@@ -99,6 +99,7 @@ async function main() {
           endslot: endslot,
           title: title,
           description: description,
+          linkedProject: linkedProject,
       });
         res.json({ message: "Event added successfully" });
       } catch (error) {
@@ -164,13 +165,13 @@ async function main() {
 
     exp.post('/api/updateevent', async (req, res) => {
       try {
-        const projectId = req.headers.projectid;
+        const eventId = req.headers.eventid;
         const updates = req.body;
-        console.log('id: ', projectId)
+        console.log('id: ', eventId)
         console.log('body: ', updates)
         const eventsCollection = db.collection('events');
         await eventsCollection.updateOne(
-          { _id: new ObjectId(projectId) },
+          { _id: new ObjectId(eventId) },
           { $set: updates }
         );
         res.json({ message: "Event updated successfully" });

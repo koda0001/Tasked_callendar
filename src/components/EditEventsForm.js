@@ -19,6 +19,7 @@ const parseTimeToSlot = (timeString) => {
 
 function EditEvents({ event }) {
   const navigate = useNavigate();
+  const [projects, setProjects] = useState([]);
   const [eventdate, setDate] = useState(() => format(event.date, 'yyyy-MM-dd'));
   const [startTime, setStartTime] = useState(() => formatTime(event.startslot));
   const [endTime, setEndTime] = useState(() => formatTime(event.endslot));
@@ -32,6 +33,29 @@ function EditEvents({ event }) {
       setEventData({ ...event });
     }
   }, [event]);
+
+  const fetchProjects = async () => {
+    const userId = app.currentUser?.id;
+    try {
+      const response = await fetch(`http://localhost:3002/api/projects?userId=${userId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${userId}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Something went wrong!'); // Handling non-2xx responses
+      }
+      const data = await response.json();
+      setProjects(data);
+    } catch (error) {
+      console.error("Failed to fetch projects:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -51,10 +75,9 @@ function EditEvents({ event }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const eventid = event._id
+    const eventid = event._id;
     const newStartSlot = parseTimeToSlot(startTime);
     const newEndSlot = parseTimeToSlot(endTime);
-    // console.log('id of event is: ', eventid)
     const userid = app.currentUser.id;
     const bodyData = {
         userid: userid,
@@ -64,7 +87,8 @@ function EditEvents({ event }) {
         startslot: newStartSlot,
         endslot: newEndSlot,
         title: eventData.title,
-        description: eventData.description
+        description: eventData.description,
+        linkedProject: eventData.linkedProject,
     };
     console.log('Updated Event Data:', bodyData);
     try {
@@ -77,18 +101,18 @@ function EditEvents({ event }) {
         },
         body : JSON.stringify(bodyData)
         });
-        // const data = await response.json();
-        console.log("Connected correctly to server");
+        if (!response.ok) {
+          throw new Error('Something went wrong!'); // Handling non-2xx responses
+        }
       } catch (error) {
         console.error("Failed to add events:", error);
-
       }
       navigate('/');
       window.location.reload();
   };
 
   const deleteEvent = async () => {
-    const eventid = event._id
+    const eventid = event._id;
     const userid = app.currentUser.id;
     try {
       const response = await fetch('http://localhost:3002/api/deleteevent', {
@@ -99,8 +123,9 @@ function EditEvents({ event }) {
           'eventid' : eventid      
         },
         });
-        // const data = await response.json();
-        console.log("Connected correctly to server");
+        if (!response.ok) {
+          throw new Error('Something went wrong!'); // Handling non-2xx responses
+        }
       } catch (error) {
         console.error("Failed to add events:", error);
     }
@@ -129,27 +154,42 @@ function EditEvents({ event }) {
         <label>
           Title:
           <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    maxLength="20"
-                    value={eventData.title}
-                    onChange={handleInputChange}
-                    />
+            type="text"
+            id="title"
+            name="title"
+            maxLength="20"
+            value={eventData.title}
+            onChange={handleInputChange}
+          />
         </label>
         <label>
           Description:
           <textarea
-                    id="description"
-                    name="description"
-                    maxLength="200"
-                    value={eventData.description}
-                    onChange={handleInputChange}
-                    />
+            id="description"
+            name="description"
+            maxLength="200"
+            value={eventData.description}
+            onChange={handleInputChange}
+          />
+        </label>
+        <label>
+          Linked Project:
+          <select
+            name="linkedProject"
+            value={eventData.linkedProject || ''}
+            onChange={handleInputChange}
+          >
+            <option value="">Select a project</option>
+            {projects.map((project) => (
+              <option key={project._id} value={project._id}>
+                {project.title}
+              </option>
+            ))}
+          </select>
         </label>
         <button type="submit">Save Changes</button>
       </form>
-        <button onClick={deleteEvent}>Delete Event</button>
+      <button onClick={deleteEvent}>Delete Event</button>
     </div>
   );
 }
