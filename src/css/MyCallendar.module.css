@@ -172,13 +172,14 @@
 
 .eventTitle {
   display: block;
-  background-color: #5d738f;
   color: white;
-  font-size: 0.8em;
+  font-size: 0.7em;
   padding: 2px;
+  border-radius: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 
 

@@ -258,18 +258,20 @@ const MyCalendar = ({ index, date, events = [] }) => {
     return timeslots;
   };
 
-  const getSlotStyle = (indexdate) => {
-    const [index, date] = indexdate.split(',');
-    let style = { backgroundColor: 'white', border: '1px solid black' , height: '15px'};
-
-    if (selectedRange && index >= selectedRange.start && index <= selectedRange.end && dragColumnDate === date) {
+  const getSlotStyle = (index, dateStr) => {
+    let style = { backgroundColor: 'white', border: '1px solid black', height: '15px'};
+  
+    if (selectedRange && index >= selectedRange.start && index <= selectedRange.end && dragColumnDate === dateStr) {
       style.backgroundColor = blueGrey[100];
     }
-    eventSlots.forEach(slot => {
-      if (index >= slot.startSlot && index <= slot.endSlot) {
+  
+    events.forEach(event => {
+      const eventDateStr = format(new Date(event.date), 'yyyy-MM-dd');
+      if (eventDateStr === dateStr && index >= event.startslot && index <= event.endslot) {
         style.backgroundColor = blueGrey[300]; // Adjust the color to indicate the slot is taken
       }
     });
+  
     return style;
   };
   
@@ -290,9 +292,6 @@ const MyCalendar = ({ index, date, events = [] }) => {
   const renderWeekView = () => {
     const dates = generateWeekViewDates();
     const timelegendslots = generateFullHourTimeSlots(new Date());
-    const startDate = startOfWeek(currentDate, { weekStartsOn: 1 });
-    const endDate = endOfWeek(currentDate, { weekStartsOn: 1 });
-    const weeklyEventSlots = getWeeklyEventSlots(startDate, endDate);
   
     return (
       <div className={styles.weekContainer}>
@@ -324,18 +323,22 @@ const MyCalendar = ({ index, date, events = [] }) => {
                 className={`${styles.dayColumn} ${dateStr === format(new Date(), 'yyyy-MM-dd') ? styles.todayweek : ''}`}
               >
                 {Array.from({ length: totalSlots }, (_, index) => {
-                  const indexdate = `${index},${format(date, 'dd-MM')}`;
-                  const isSlotTaken = weeklyEventSlots[dateStr] && weeklyEventSlots[dateStr][index];
-                  const slotStyle = getSlotStyle(indexdate);
+                  const isSlotTaken = events.find(event => {
+                    const eventDateStr = format(new Date(event.date), 'yyyy-MM-dd');
+                    return eventDateStr === dateStr && index >= event.startslot && index <= event.endslot;
+                  });
+                  const slotStyle = getSlotStyle(index, dateStr);
                   return (
                     <div
-                      key={indexdate}
+                      key={`${index},${dateStr}`}
                       className="slot"
                       onMouseDown={() => handleMouseDown(index)}
                       onMouseUp={() => handleMouseUp(index, date)}
                       style={slotStyle}
                     >
-                      {isSlotTaken && isSlotTaken.title && <span className={styles.eventTitle}>{isSlotTaken.title}</span>}
+                      {isSlotTaken && index === isSlotTaken.startslot && (
+                        <span className={styles.eventTitle}>{isSlotTaken.title}</span>
+                      )}
                     </div>
                   );
                 })}
@@ -351,26 +354,26 @@ const MyCalendar = ({ index, date, events = [] }) => {
   
   
   
-  const renderDayView = () => {
-    return (
-      <div className={styles.dayView}>
-        <h2>{format(currentDate, 'eeee, MMMM d, yyyy')}</h2>
-        <div>
-          {generateTimeSlots(currentDate).map((time, index) => (
-            <div
-              key={index}
-              className={styles.timeSlot}
-              onMouseDown={() => handleMouseDown(time)}
-              onMouseEnter={() => handleMouseEnter(time)}
-              onMouseUp={handleMouseUp}
-            >
-              {format(time, 'HH:mm')}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
+  // const renderDayView = () => {
+  //   return (
+  //     <div className={styles.dayView}>
+  //       <h2>{format(currentDate, 'eeee, MMMM d, yyyy')}</h2>
+  //       <div>
+  //         {generateTimeSlots(currentDate).map((time, index) => (
+  //           <div
+  //             key={index}
+  //             className={styles.timeSlot}
+  //             onMouseDown={() => handleMouseDown(time)}
+  //             onMouseEnter={() => handleMouseEnter(time)}
+  //             onMouseUp={handleMouseUp}
+  //           >
+  //             {format(time, 'HH:mm')}
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   );
+  // };
   
   const renderMonthView = () => {
     const dates = generateMonthViewDates();
@@ -393,9 +396,7 @@ const MyCalendar = ({ index, date, events = [] }) => {
   };
 
   const renderCalendarView = () => {
-    switch (view) {
-      case 'day':
-        return renderDayView();
+    switch (view) { 
       case 'week':
         return renderWeekView();
       case 'month':
@@ -408,7 +409,6 @@ const MyCalendar = ({ index, date, events = [] }) => {
   return (
     <div className={styles.calendarContainer}>
       <div className={styles.controls}>
-        <button onClick={() => setView('day')} className={styles.button}>Day</button>
         <button onClick={() => setView('week')} className={styles.button}>Week</button>
         <button onClick={() => setView('month')} className={styles.button}>Month</button>
         <button onClick={() => changeDate(-1)} className={styles.button}>&lt; Prev</button>

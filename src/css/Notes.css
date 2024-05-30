@@ -1,0 +1,44 @@
+.Notes {
+    padding: 20px;
+  }
+  
+  button {
+    margin-bottom: 20px;
+  }
+  
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  
+  .note {
+    background: #c1c1c1;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .note:hover {
+    background: #e0e0e0;
+  }
+  
+  .modal-content {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: auto;
+  }
+  
+  input, textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  button {
+    margin-right: 10px;
+  }
+  
