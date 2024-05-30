@@ -4,32 +4,30 @@ import app from '../realm/realmConfig';
 import EditEvents from '../components/EditEventsForm';
 import EditTaskForm from '../components/EditTaskForm'; // Import EditTaskForm
 import { format } from 'date-fns';
-import '../css/Projects.css';
+import '../css/Events.css';
 
-function Projects() {
+function Events() {
   const [events, setEvents] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [selectedTask, setSelectedTask] = useState(null); // State for selected task
+  const [selectedTask, setSelectedTask] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showEditTaskModal, setShowEditTaskModal] = useState(false); // State for task modal
+  const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoadingEvents, setIsLoadingEvents] = useState(false);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [errorEvents, setErrorEvents] = useState(null);
   const [errorTasks, setErrorTasks] = useState(null);
+  const date = format(new Date(), 'yyyy-MM-dd');
   const userId = app.currentUser?.id;
   const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
 
   const openEditModal = (event) => {
     setSelectedEvent(event);
     setShowEditModal(true);
-  };
-
-  const openEditTaskModal = (task) => {
-    setSelectedTask(task);
-    setShowEditTaskModal(true);
   };
 
   const closeEditModal = () => {
@@ -96,6 +94,68 @@ function Projects() {
     }
   };
 
+  const updateTaskStatus = async (task, newStatus) => {
+    const tasksid = task._id;
+    const userid = app.currentUser.id;
+    const bodyData = {
+      userid: userid,
+      date: task.date,
+      title: task.title,
+      content: task.content,
+      status: newStatus,
+      linkedEvent: task.linkedEvent // Include linkedEvent in the request body
+    };
+
+    console.log('Updating task', tasksid, 'with status', newStatus);
+
+    try {
+      const response = await fetch(`http://localhost:3002/api/updatetask`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': userid,
+          'taskid': tasksid
+        },
+        body: JSON.stringify(bodyData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+
+      console.log("Connected correctly to server");
+      setIsLoading(true);
+      setError(null);
+      const fetchUpdatedTasks = async () => {
+        try {
+          const response = await fetch(`http://localhost:3002/api/tasks?userId=${userId}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `${userId}`
+            }
+          });
+          if (!response.ok) {
+            throw new Error('Something went wrong!');
+          }
+          const data = await response.json();
+          const formattedTasks = data.map(task => ({
+            ...task,
+            date: new Date(task.date)
+          }));
+          setTasks(formattedTasks);
+        } catch (error) {
+          console.error("Failed to fetch tasks:", error);
+          setError(error.toString());
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchUpdatedTasks();
+    } catch (error) {
+      console.error("Failed to save tasks:", error);
+    }
+  };
+
   useEffect(() => {
     fetchEvents();
     fetchTasks();
@@ -107,40 +167,48 @@ function Projects() {
   return (
     <div className="app">
       <div className="projects-grid">
-  <div className="events-section">
-    <h2>Events</h2>
-    {events.map((event, index) => (
-      <div key={index} className="project" onClick={() => openEditModal(event)}>
-        <h3>{event.title}</h3>
-        <p>Date: {format(new Date(event.date), 'MM/dd/yyyy')}</p>
-        <p>Start Time: {event.startdate}</p>
-        <p>End Time: {event.enddate}</p>
-        <p>Description: {event.description}</p>
-        <div className="tasks-section">
-          <h2>Tasks</h2>
-          {tasks
-            .filter(task => task.linkedEvent === event._id) // Filter tasks by linkedEvent
-            .map((task, index) => (
-              <button key={index} className="task-button" onClick={() => openEditTaskModal(task)}>
-                <div className="task-details">
-                  <p>{task.title}</p>
-                  <p>Status: {task.status}</p>
-                </div>
-              </button>
-            ))}
+        <h2>Events</h2>
+        <div className="events-section">
+          {events.map((event, index) => (
+            <div key={index} className="project" onClick={() => openEditModal(event)}>
+              <h3>{event.title}</h3>
+              <p>Date: {format(new Date(event.date), 'MM/dd/yyyy')}</p>
+              <p>Start Time: {event.startdate}</p>
+              <p>End Time: {event.enddate}</p>
+              <p>Description: {event.description}</p>
+              <div className="tasks-section">
+                <h2>Tasks</h2>
+                {tasks
+                  .filter(task => task.linkedEvent === event._id) // Filter tasks by linkedEvent
+                  .map((task) => (
+                    <div key={task._id} className="task-details" onClick={(e) => e.stopPropagation()}>
+                      <p>{task.title}</p>
+                      <p>Status: 
+                        <select
+                          value={task.status}
+                          onChange={(e) => {
+                            e.stopPropagation(); // Prevent event bubbling
+                            updateTaskStatus(task, e.target.value); // Pass task and new status
+                          }}
+                        >
+                          <option value="In progress">In progress</option>
+                          <option value="On hold">On hold</option>
+                          <option value="Done">Done</option>
+                          <option value="Canceled">Canceled</option>
+                        </select>
+                      </p>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    ))}
-  </div>
-</div>
       <Modal isOpen={showEditModal} close={closeEditModal} onRequestClose={closeEditModal} contentLabel="Edit Event Modal">
-        <EditEvents event={selectedEvent} date={formattedDate}/>
-      </Modal>
-      <Modal isOpen={showEditTaskModal} close={closeEditTaskModal} onRequestClose={closeEditTaskModal} contentLabel="Edit Task Modal"> {/* Task Modal */}
-        <EditTaskForm task={selectedTask} />
+        <EditEvents event={selectedEvent} date={formattedDate} />
       </Modal>
     </div>
   );
 }
 
-export default Projects;
+export default Events;

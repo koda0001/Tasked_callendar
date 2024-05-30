@@ -1,0 +1,63 @@
+.projects-grid{
+    display: flex;
+    flex-direction: row;
+}
+
+.events-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .project {
+    flex-basis: calc(33.33% - 10px); /* Adjust width as needed */
+    margin-bottom: 20px; /* Adjust spacing between rows */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #f9f9f9;
+  }
+  
+  .project:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .project h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .project p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
+  .tasks-section {
+    margin-top: 15px;
+  }
+  
+  .task-button {
+    display: block;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 5px;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  
+  .task-button:hover {
+    background-color: #e6e6e6;
+  }
+  
+  .task-details {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .task-details p {
+    margin: 0;
+  }
+  
