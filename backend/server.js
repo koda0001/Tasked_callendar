@@ -127,14 +127,15 @@ async function main() {
   
     exp.post('/api/addtask', async (req, res) => {
       try {
-        const { userid, date, title, content, status } = req.body; // Extracting from the body now
+        const { userid, date, title, content, status, linkedEvent } = req.body; // Extracting from the body now
         const eventsCollection = db.collection('tasks');
         await eventsCollection.insertOne({
           userid: userid,
           date: date,
           title: title,
           content: content,
-          status: status // Add status to the task document
+          status: status,
+          linkedEvent: linkedEvent, // Add status to the task document
         });
         res.json({ message: "Task added successfully" });
       } catch (error) {
@@ -203,8 +204,8 @@ async function main() {
       try {
         const taskId = req.headers.taskid; // Use 'taskid' header
         const updates = req.body;
-        console.log('id: ', taskId);
-        console.log('body: ', updates);
+        console.log('update task id: ', taskId);
+        console.log('update task body: ', updates);
         const eventsCollection = db.collection('tasks');
         await eventsCollection.updateOne(
           { _id: new ObjectId(taskId) },
@@ -246,6 +247,37 @@ async function main() {
       } catch (error) {
         console.log("Error in deleting event:", error);
         res.status(500).json({ message: "Error deleting event ", error });
+      }
+    });
+
+    exp.post('/api/deletetask', async (req, res) => {
+      try {
+        const taskId = req.headers.taskid;
+        console.log('delete task id: ', taskId)
+        const eventsCollection = db.collection('tasks');
+        await eventsCollection.deleteOne(
+          { _id: new ObjectId(taskId) },
+        );
+        res.json({ message: "Task deleted successfully" });
+      } catch (error) {
+        console.log("Error in deleting task:", error);
+        res.status(500).json({ message: "Error deleting task ", error });
+      }
+    });
+
+    exp.post('/api/deleteproject', async (req, res) => {
+      try {
+        const projectId = req.headers.projectid;
+        console.log('id: ', projectId)
+        console.log('delete project id: ', projectId)
+        const eventsCollection = db.collection('projects');
+        await eventsCollection.deleteOne(
+          { _id: new ObjectId(projectId) },
+        );
+        res.json({ message: "Project deleted successfully" });
+      } catch (error) {
+        console.log("Error in deleting project:", error);
+        res.status(500).json({ message: "Error deleting project ", error });
       }
     });
 

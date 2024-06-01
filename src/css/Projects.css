@@ -19,8 +19,92 @@
     cursor: pointer;
     transition: transform 0.3s;
   }
-  
-  .project:hover {
-    transform: scale(1.05);
-  }
-  
+
+
+.project:hover {
+  border-color: #555;
+}
+
+.project h3 {
+  margin-top: 0;
+}
+
+.project p {
+  margin: 10px 0;
+}
+
+.project ul {
+  margin: 10px 0;
+  padding: 0;
+}
+
+.project li {
+  list-style: none;
+}
+
+.project button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.project button:hover {
+  background-color: #0056b3;
+}
+
+.modal-content {
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  margin-bottom: 10px;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.modal-body input,
+.modal-body textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-body button {
+  margin-right: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-body button:hover {
+  background-color: #0056b3;
+}
+
+.modal-footer {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.modal-footer button {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.modal-footer button:first-child {
+  background-color: #dc3545;
+}

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../components/Modal';
 import app from '../realm/realmConfig';
 import EditEvents from '../components/EditEventsForm';
-import EditTaskForm from '../components/EditTaskForm'; // Import EditTaskForm
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import '../css/Events.css';
 
 function Events() {
@@ -164,44 +163,87 @@ function Events() {
   if (isLoadingEvents || isLoadingTasks) return <div>Loading...</div>; // Loading state
   if (errorEvents || errorTasks) return <div>{errorEvents || errorTasks}</div>; // Error state
 
+  // Sorting events by date and start time
+  const sortedEvents = events.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    if (dateA.getTime() !== dateB.getTime()) return dateA - dateB;
+    
+    const timeA = parse(a.startdate, 'hh:mma', new Date());
+    const timeB = parse(b.startdate, 'hh:mma', new Date());
+    return timeA - timeB;
+  });
+
   return (
     <div className="app">
-      <div className="projects-grid">
+      <div className="events-grid">
         <h2>Events</h2>
         <div className="events-section">
-          {events.map((event, index) => (
-            <div key={index} className="project" onClick={() => openEditModal(event)}>
-              <h3>{event.title}</h3>
-              <p>Date: {format(new Date(event.date), 'MM/dd/yyyy')}</p>
-              <p>Start Time: {event.startdate}</p>
-              <p>End Time: {event.enddate}</p>
-              <p>Description: {event.description}</p>
-              <div className="tasks-section">
-                <h2>Tasks</h2>
-                {tasks
-                  .filter(task => task.linkedEvent === event._id) // Filter tasks by linkedEvent
-                  .map((task) => (
-                    <div key={task._id} className="task-details" onClick={(e) => e.stopPropagation()}>
-                      <p>{task.title}</p>
-                      <p>Status: 
-                        <select
-                          value={task.status}
-                          onChange={(e) => {
-                            e.stopPropagation(); // Prevent event bubbling
-                            updateTaskStatus(task, e.target.value); // Pass task and new status
-                          }}
-                        >
-                          <option value="In progress">In progress</option>
-                          <option value="On hold">On hold</option>
-                          <option value="Done">Done</option>
-                          <option value="Canceled">Canceled</option>
-                        </select>
-                      </p>
-                    </div>
-                  ))}
+          {sortedEvents.map((event, index) => {
+            // Filter tasks linked to the current event
+            const eventTasks = tasks.filter(task => task.linkedEvent === event._id);
+
+            // Calculate summary statistics for the current event
+            const totalTasks = eventTasks.length;
+            const doneTasks = eventTasks.filter(task => task.status === 'Done').length;
+            const percentageDone = totalTasks > 0 ? ((doneTasks / totalTasks) * 100).toFixed(2) : 0;
+
+            return (
+              <div key={index} className="event" onClick={() => openEditModal(event)}>
+                <h3>{event.title}</h3>
+                <p>Date: {format(new Date(event.date), 'MM/dd/yyyy')}</p>
+                <p>Start Time: {event.startdate}</p>
+                <p>End Time: {event.enddate}</p>
+                <p>Description: {event.description}</p>
+                <div className="tasks-section">
+                  <h2>Tasks</h2>
+                  {eventTasks.map((task) => {
+                    let taskClass = '';
+                    switch (task.status) {
+                      case 'Done':
+                        taskClass = 'task-status-done';
+                        break;
+                      case 'In progress':
+                        taskClass = 'task-status-in-progress';
+                        break;
+                      case 'On hold':
+                        taskClass = 'task-status-on-hold';
+                        break;
+                      case 'Canceled':
+                        taskClass = 'task-status-canceled';
+                        break;
+                      default:
+                        break;
+                    }
+                    return (
+                      <div key={task._id} className={`task-details ${taskClass}`} onClick={(e) => e.stopPropagation()}>
+                        <p>{task.title}</p>
+                        <p>Status: 
+                          <select
+                            value={task.status}
+                            onChange={(e) => {
+                              e.stopPropagation(); // Prevent event bubbling
+                              updateTaskStatus(task, e.target.value); // Pass task and new status
+                              
+                            }}
+                          >
+                            <option value="In progress">In progress</option>
+                            <option value="On hold">On hold</option>
+                            <option value="Done">Done</option>
+                            <option value="Canceled">Canceled</option>
+                          </select>
+                        </p>
+                      </div>
+                    );
+                  })}
+                  <div className="tasks-summary">
+                    <h3>Tasks Summary</h3>
+                    <p>Percentage Done: {percentageDone}%</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
       <Modal isOpen={showEditModal} close={closeEditModal} onRequestClose={closeEditModal} contentLabel="Edit Event Modal">

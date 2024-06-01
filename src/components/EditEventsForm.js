@@ -188,8 +188,8 @@ function EditEvents({ event }) {
           </select>
         </label>
         <button type="submit">Save Changes</button>
-      </form>
       <button onClick={deleteEvent}>Delete Event</button>
+      </form>
     </div>
   );
 }

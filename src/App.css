@@ -5,6 +5,7 @@
   flex-direction: row; /* Aligns nav and Home side by side */
   height: 100vh; /* Full viewport height */
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .errorMessage {
@@ -49,9 +50,10 @@ nav a:hover {
   overflow-y: auto;
   background-color: #f4f4f4;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: auto;
+} 
 
-}
+
 
 /* Optional: Basic styling reset for body to remove default margin/padding */
 body, html {

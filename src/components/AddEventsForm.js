@@ -95,8 +95,8 @@ function DayEventList({ events, date, index }) {
         if (dragStart !== null) {
             const startSlot = Math.min(dragStart, index);
             const endSlot = Math.max(dragStart, index);
-            const newEventStartDateTime = `${date}T${formatTime(startSlot * 15).replace(/ /g, '').replace(':', 'H')}:00`;
-            const newEventEndDateTime = `${date}T${formatTime((endSlot + 1) * 15).replace(/ /g, '').replace(':', 'H')}:00`;
+            const newEventStartDateTime = `${formatTime(startSlot * 15).replace(/ /g, '')}`;
+            const newEventEndDateTime = `${formatTime((endSlot + 1) * 15).replace(/ /g, '')}`;
 
             setEventData(prevData => ({
                 ...prevData,

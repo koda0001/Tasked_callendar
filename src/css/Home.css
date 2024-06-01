@@ -4,3 +4,7 @@ body, html {
     font-family: Arial, sans-serif;
     overflow: hidden;
   }
+
+.Home{
+  overflow: hidden;
+}

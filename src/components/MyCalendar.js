@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, addDays, addMonths, subMonths, addMinutes, addHours, getDay, subDays } from 'date-fns';
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, addDays, addMonths, subMonths, addMinutes, addHours, getDay, subDays, parse } from 'date-fns';
 import Modal from '../components/Modal';
 import AddEvents from './AddEventsForm';
 import AddWeekEvents from './AddEventsWeekForm';
@@ -9,7 +9,7 @@ import styles from '../css/MyCallendar.module.css';
 import { da } from 'date-fns/locale/da';
 
 const MyCalendar = ({ index, date, events = [] }) => {
-  const [view, setView] = useState('week');
+  const [view, setView] = useState('month');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -35,7 +35,7 @@ const MyCalendar = ({ index, date, events = [] }) => {
     endslot: '',
     title: '',
     description: ''
-    });
+  });
 
   const formatTime = (minutesFromMidnight) => {
     const hours = Math.floor(minutesFromMidnight / 60);
@@ -49,10 +49,10 @@ const MyCalendar = ({ index, date, events = [] }) => {
 
   useEffect(() => {
     eventSlots.forEach(slot => {
-        console.log(`Event '${slot.title}' occupies slots from ${startSlot} to ${endSlot}`);
-        console.log(slot.date)
+      console.log(`Event '${slot.title}' occupies slots from ${startSlot} to ${endSlot}`);
+      console.log(slot.date)
     });
-}, [events]);
+  }, [events]);
 
   const updateMousePosition = (e) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -75,31 +75,32 @@ const MyCalendar = ({ index, date, events = [] }) => {
     const modalY = mousePosition.y + offsetY;
 
     return { x: modalX, y: modalY };
-};
-
-  const eventSlots = events.filter(event => {
-    // Assuming `event.date` is in a comparable format or convert it to Date if necessary
-    const eventDate = new Date(event.date);
-    const eventToMatch = new Date(date);
-    return eventDate.toDateString() === eventToMatch.toDateString(); // Compares only the date part
-  }).map(event => { 
-    const startTime =  event.startslot;
-    const endTime =  event.endslot;
-
-    const startTimeFormated = new Date(`${date}T${formatTime(event.startslot * 15).replace(/ /g, '').replace(':', 'H')}:00`);
-    const endTimeFormated = new Date(`${date}T${formatTime(event.endslot * 15).replace(/ /g, '').replace(':', 'H')}:00`);
-
-    // Convert start and end times to minutes from midnight
-    const startMinutes = startTimeFormated.getHours() * 60 + startTimeFormated.getMinutes();
-    const endMinutes = endTimeFormated.getHours() * 60 + endTimeFormated.getMinutes();
-
-    console.log('Event start time: ', startTimeFormated);
-  return {
-    startSlot: startTime,
-    endSlot: endTime,
-    title: event.title
   };
-  });
+
+  const eventSlots = events
+    .filter(event => {
+      const eventDate = new Date(event.date);
+      const eventToMatch = new Date(date);
+      return eventDate.toDateString() === eventToMatch.toDateString(); // Compares only the date part
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (dateA < dateB) return -1;
+      if (dateA > dateB) return 1;
+      const timeA = new Date(`1970-01-01T${a.startdate}`).getTime();
+      const timeB = new Date(`1970-01-01T${b.startdate}`).getTime();
+      return timeA - timeB;
+    })
+    .map(event => {
+      const startTime = event.startslot;
+      const endTime = event.endslot;
+      return {
+        startSlot: startTime,
+        endSlot: endTime,
+        title: event.title
+      };
+    });
 
   const getWeeklyEventSlots = (startDate, endDate) => {
     const eventSlots = {};
@@ -118,7 +119,6 @@ const MyCalendar = ({ index, date, events = [] }) => {
     }
     return eventSlots;
   };
-  
 
   const changeDate = (amount) => {
     if (view === 'day') {
@@ -139,18 +139,16 @@ const MyCalendar = ({ index, date, events = [] }) => {
     setShowAddModal(false);
     setSelectedDate(null);
   };
-  // Function to handle opening AddWeekEvents modal
+
   const openAddWeekModal = (date) => {
     setSelectedDate(date);
     setShowAddWeekModal(true);
   };
 
-  // Function to close AddWeekEvents modal
   const closeAddWeekModal = () => {
     setShowAddWeekModal(false);
     setSelectedDate(null);
   };
-
 
   const openEditModal = (event) => {
     setSelectedEvent(event);
@@ -180,46 +178,40 @@ const MyCalendar = ({ index, date, events = [] }) => {
       currentTime = addHours(currentTime, 1); // Add one hour
     }
     return slots;
-  };  
-  
-  const handleMouseDown = (index) => {
-    setDragStart(index); 
-    // console.log(index);
   };
-  
+
+  const handleMouseDown = (index) => {
+    setDragStart(index);
+  };
+
   const handleMouseEnter = (time) => {
     if (timeSelectionStart) {
       setTimeSelectionEnd(time);
     }
   };
-  
+
   const handleMouseUp = (index, date) => {
     if (dragStart !== null) {
       const startSlot = Math.min(dragStart, index);
       const endSlot = Math.max(dragStart, index);
       setDragColumnDate(format(date, 'dd-MM')); // Store the column's date
-      // console.log('start slot is ',startSlot)
-      // console.log('end slot is ',endSlot)      
-      // console.log('date clicked is:', format(date, 'dd-MM'))
 
       const offsetX = 20; // Distance from mouse pointer
       const offsetY = 20; // Distance from mouse pointer
-  
+
       const modalX = mousePosition.x + offsetX;
       const modalY = mousePosition.y + offsetY;
 
-      // Calculate the new dates
-      const newEventStartDateTime = `${date}T${formatTime(startSlot * 15).replace(/ /g, '').replace(':', 'H')}:00`;
-      const newEventEndDateTime = `${date}T${formatTime((endSlot + 1) * 15).replace(/ /g, '').replace(':', 'H')}:00`;
+      const newEventStartDateTime = `${formatTime(startSlot * 15).replace(/ /g, '')}`;
+      const newEventEndDateTime = `${formatTime((endSlot + 1) * 15).replace(/ /g, '')}`;
 
-      // Update eventData directly here
       setEventData(prevData => ({
-          ...prevData,
-          date: format(date, 'yyyy-MM-dd'),
-          startdate: newEventStartDateTime,
-          enddate: newEventEndDateTime,
-          startslot: startSlot,
-          endslot: endSlot
+        ...prevData,
+        date: format(date, 'yyyy-MM-dd'),
+        startdate: newEventStartDateTime,
+        enddate: newEventEndDateTime,
+        startslot: startSlot,
+        endslot: endSlot
       }));
 
       setSelectedRange({ start: startSlot, end: endSlot });
@@ -227,9 +219,7 @@ const MyCalendar = ({ index, date, events = [] }) => {
 
       setModalPosition({ x: modalX, y: modalY });
       console.log('modal pos', modalPosition);
-     
-
-  }
+    }
   };
 
   const generateMonthViewDates = () => {
@@ -237,7 +227,7 @@ const MyCalendar = ({ index, date, events = [] }) => {
     const end = endOfMonth(currentDate);
     let dates = eachDayOfInterval({ start, end });
 
-    const paddingDaysCount = getDay(start) === 0 ? 6 : getDay(start) - 1; 
+    const paddingDaysCount = getDay(start) === 0 ? 6 : getDay(start) - 1;
     const paddingDays = Array.from({ length: paddingDaysCount }, (_, i) => subDays(start, paddingDaysCount - i));
     return [...paddingDays, ...dates];
   };
@@ -259,22 +249,21 @@ const MyCalendar = ({ index, date, events = [] }) => {
   };
 
   const getSlotStyle = (index, dateStr) => {
-    let style = { backgroundColor: 'white', border: '1px solid black', height: '15px'};
-  
+    let style = { backgroundColor: 'white', border: '1px solid black', height: '15px' };
+
     if (selectedRange && index >= selectedRange.start && index <= selectedRange.end && dragColumnDate === dateStr) {
       style.backgroundColor = blueGrey[100];
     }
-  
+
     events.forEach(event => {
       const eventDateStr = format(new Date(event.date), 'yyyy-MM-dd');
       if (eventDateStr === dateStr && index >= event.startslot && index <= event.endslot) {
         style.backgroundColor = blueGrey[300]; // Adjust the color to indicate the slot is taken
       }
     });
-  
+
     return style;
   };
-  
 
   const modalStyle = {
     position: 'fixed',
@@ -288,11 +277,11 @@ const MyCalendar = ({ index, date, events = [] }) => {
     height: '300px',
     zIndex: 9999, // Ensure the modal is on top of other elements
   };
-  
+
   const renderWeekView = () => {
     const dates = generateWeekViewDates();
     const timelegendslots = generateFullHourTimeSlots(new Date());
-  
+
     return (
       <div className={styles.weekContainer}>
         <div className={styles.dayLegend}>
@@ -349,54 +338,48 @@ const MyCalendar = ({ index, date, events = [] }) => {
       </div>
     );
   };
-  
 
-  
-  
-  
-  // const renderDayView = () => {
-  //   return (
-  //     <div className={styles.dayView}>
-  //       <h2>{format(currentDate, 'eeee, MMMM d, yyyy')}</h2>
-  //       <div>
-  //         {generateTimeSlots(currentDate).map((time, index) => (
-  //           <div
-  //             key={index}
-  //             className={styles.timeSlot}
-  //             onMouseDown={() => handleMouseDown(time)}
-  //             onMouseEnter={() => handleMouseEnter(time)}
-  //             onMouseUp={handleMouseUp}
-  //           >
-  //             {format(time, 'HH:mm')}
-  //           </div>
-  //         ))}
-  //       </div>
-  //     </div>
-  //   );
-  // };
-  
   const renderMonthView = () => {
     const dates = generateMonthViewDates();
+  
     return (
       <div className={styles.grid}>
-        {dates.map((date, index) => (
-          <div key={index} onClick={() => openAddModal(date)} className={`${styles.dateCell} ${format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? styles.today : ''}`}>
-            <h3>{format(date, 'dd')}</h3>
-            {events.filter(event => format(event.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
-              .map((event, eventIndex) => (
-                <p key={eventIndex} className={styles.event} onClick={(e) => {
-                  e.stopPropagation();
-                  openEditModal(event);
-                }}>{event.title}</p>
+        {dates.map((date, index) => {
+          const dayEvents = events
+            .filter(event => format(new Date(event.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
+            .sort((a, b) => a.startslot - b.startslot); // Sort based on startslot
+  
+          return (
+            <div
+              key={index}
+              onClick={() => openAddModal(date)}
+              className={`${styles.dateCell} ${format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd') ? styles.today : ''}`}
+            >
+              <h3>{format(date, 'dd')}</h3>
+              {dayEvents.map((event, eventIndex) => (
+                <p
+                  key={eventIndex}
+                  className={styles.event}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openEditModal(event);
+                  }}
+                >
+                  {event.title}
+                </p>
               ))}
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
     );
   };
+  
+  
+  
 
   const renderCalendarView = () => {
-    switch (view) { 
+    switch (view) {
       case 'week':
         return renderWeekView();
       case 'month':
@@ -416,13 +399,13 @@ const MyCalendar = ({ index, date, events = [] }) => {
       </div>
       {renderCalendarView()}
       <Modal isOpen={showAddModal} close={closeAddModal}>
-        <AddEvents events={events} date={formattedDate}/>
+        <AddEvents events={events} date={formattedDate} />
       </Modal>
       <Modal isOpen={showAddWeekModal} close={closeAddWeekModal} className="modal">
         <AddWeekEvents events={events} date={formattedDate} data={eventData} position={modalPosition} />
       </Modal>
       <Modal isOpen={showEditModal} close={closeEditModal}>
-        <EditEvents event={selectedEvent} date={formattedDate}/>
+        <EditEvents event={selectedEvent} date={formattedDate} />
       </Modal>
     </div>
   );

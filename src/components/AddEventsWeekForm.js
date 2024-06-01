@@ -20,10 +20,8 @@ function DayEventList({ events, date, data, position}) {
     const [dragStart, setDragStart] = useState(null);
     const [selectedRange, setSelectedRange] = useState(null);
     const containerHeight = 600; // Height of the scrollable container in pixels
-    const newEventStartDateTime = `${date}T${formatTime(data.startslot * 15).replace(/ /g, '').replace(':', 'H')}:00`;
-    const newEventEndDateTime = `${date}T${formatTime((data.endslot + 1) * 15).replace(/ /g, '').replace(':', 'H')}:00`;
-    // const eventStartDateTime = `${date}T${formatTime(startMinutesFromMidnight).replace(/ /g, '').replace(':', 'H')}:00`;
-    // const eventEndDateTime = `${date}T${formatTime(endMinutesFromMidnight).replace(/ /g, '').replace(':', 'H')}:00`;
+    const newEventStartDateTime = `${formatTime(data.startslot * 15).replace(/ /g, '')}`;
+    const newEventEndDateTime = `${formatTime((data.endslot + 1) * 15).replace(/ /g, '')}`;
     const [eventData, setEventData] = useState({
     date: data.date, // use the date passed as prop
     startdate: newEventStartDateTime,

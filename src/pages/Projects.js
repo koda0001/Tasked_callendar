@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from '../components/Modal';
 import app from '../realm/realmConfig';
 import EditEvents from '../components/EditEventsForm';
@@ -6,6 +7,7 @@ import { format } from 'date-fns';
 import '../css/Projects.css';
 
 function Projects() {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [events, setEvents] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -127,6 +129,29 @@ function Projects() {
     }
   };
 
+  const deleteProject = async () => {
+    const projectid = currentProject._id;
+    const userid = app.currentUser.id;
+
+    try {
+      const response = await fetch('http://localhost:3002/api/deleteproject', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': userid,
+          'projectid' : projectid      
+        },
+        });
+        if (!response.ok) {
+          throw new Error('Something went wrong!'); // Handling non-2xx responses
+        }
+      } catch (error) {
+        console.error("Failed to delete project:", error);
+    }
+    navigate('/projects');
+    window.location.reload();
+  };
+
   const handleOpenModal = (project = {}) => {
     setCurrentProject(project);
     setIsEditing(!!project.title);
@@ -155,8 +180,8 @@ function Projects() {
           <div key={index} className="project" onClick={() => handleOpenModal(project)}>
             <h3>{project.title}</h3>
             <p>{project.description}</p>
-            <p>Start Time: {project.startTime}</p>
-            <p>End Time: {project.endTime}</p>
+            <p>Start Time: {(project.startTime).replace('T',' ')}</p>
+            <p>End Time: {(project.endTime).replace('T',' ')}</p>
             <div>
               <h4>Linked Events</h4>
               <ul>
@@ -196,6 +221,7 @@ function Projects() {
           />
           <button type="submit">Save Project</button>
           <button type="button" onClick={handleCloseModal}>Cancel</button>
+          <button onClick={deleteProject}>Delete Task</button>
         </form>
       </Modal>
       <Modal isOpen={showEditModal} close={closeEditModal} onRequestClose={closeEditModal} contentLabel="Edit Event Modal">

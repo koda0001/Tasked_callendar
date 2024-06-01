@@ -157,6 +157,29 @@ function Tasks() {
     }
   };
 
+  const deleteTask = async () => {
+    const taskid = currentTask._id;
+    const userid = app.currentUser.id;
+
+    try {
+      const response = await fetch('http://localhost:3002/api/deletetask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': userid,
+          'taskid' : taskid      
+        },
+        });
+        if (!response.ok) {
+          throw new Error('Something went wrong!'); // Handling non-2xx responses
+        }
+      } catch (error) {
+        console.error("Failed to delete task:", error);
+    }
+    navigate('/tasks');
+    window.location.reload();
+  };
+
   const handleOpenModal = (task = { date: date, title: '', content: '', status: 'In progress' }) => {
     setCurrentTask(task);
     setIsEditing(!!task.title);
@@ -215,6 +238,7 @@ function Tasks() {
             </select>
             <button type="submit">Save Task</button>
             <button type="button" onClick={handleCloseModal}>Cancel</button>
+            <button onClick={deleteTask}>Delete Task</button>
           </form>
         </Modal>
       </div>
