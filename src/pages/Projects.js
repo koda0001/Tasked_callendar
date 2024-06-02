@@ -13,7 +13,7 @@ function Projects() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Default to current month
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,7 +53,7 @@ function Projects() {
         }
       });
       if (!response.ok) {
-        throw new Error('Something went wrong!'); // Handling non-2xx responses
+        throw new Error('Something went wrong!');
       }
       const data = await response.json();
       setProjects(data);
@@ -78,7 +78,7 @@ function Projects() {
         }
       });
       if (!response.ok) {
-        throw new Error('Something went wrong!'); // Handling non-2xx responses
+        throw new Error('Something went wrong!');
       }
       const data = await response.json();
       setEvents(data);
@@ -144,7 +144,7 @@ function Projects() {
         },
       });
       if (!response.ok) {
-        throw new Error('Something went wrong!'); // Handling non-2xx responses
+        throw new Error('Something went wrong!');
       }
     } catch (error) {
       console.error("Failed to delete project:", error);
@@ -170,10 +170,9 @@ function Projects() {
     });
   };
 
-  if (isLoading) return <div>Loading...</div>; // Loading state
-  if (error) return <div>Please log in to see projects and events</div>; // Error state
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Please log in to see projects and events</div>;
 
-  // Filter and sort projects by selected month
   const filteredProjects = projects.filter(project => new Date(project.startTime).getMonth() + 1 === selectedMonth);
 
   const sortedProjects = filteredProjects.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));

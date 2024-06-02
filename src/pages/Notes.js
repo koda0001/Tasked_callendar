@@ -36,14 +36,14 @@ const Notes = () => {
           }
         });
         if (!response.ok) {
-          throw new Error('Something went wrong!'); // Handling non-2xx responses
+          throw new Error('Something went wrong!');
         }
         const data = await response.json();
         console.log("Connected correctly to server");
 
         const formattedNotes = data.map(event => ({
           ...event,
-          date: new Date(event.date) // Ensuring date is converted to Date object
+          date: new Date(event.date)
         }));
 
         setNotes(formattedNotes);
@@ -60,7 +60,6 @@ const Notes = () => {
 
   const createOrUpdateNote = async (e) => {
     e.preventDefault();
-    console.log('notes data', currentNote);
     const notesid = currentNote._id
     const userid = app.currentUser.id;
     const bodyData = {
@@ -80,8 +79,6 @@ const Notes = () => {
         },
         body: JSON.stringify(bodyData),
       });
-      console.log('dupa', notesid);
-
       if (!response.ok) {
         throw new Error('Something went wrong!');
       }
@@ -99,12 +96,12 @@ const Notes = () => {
             }
           });
           if (!response.ok) {
-            throw new Error('Something went wrong!'); // Handling non-2xx responses
+            throw new Error('Something went wrong!');
           }
           const data = await response.json();
           const formattedNotes = data.map(event => ({
             ...event,
-            date: new Date(event.date) // Ensuring date is converted to Date object
+            date: new Date(event.date)
           }));
           setNotes(formattedNotes);
         } catch (error) {

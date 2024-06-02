@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import * as Realm from "realm-web";
 import app from '../realm/realmConfig';
 
-// Displays the given user's details
 function UserDetail({ user , onNavClick}) {
     return (
         <nav>
@@ -13,7 +12,6 @@ function UserDetail({ user , onNavClick}) {
     );
 }
 
-// user log in
 function LoginUser({ setUser }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -54,12 +52,7 @@ return (
 };
 
 const Login = () => {
-    // Keep the logged in Realm user in local state. This lets the app re-render
-    // whenever the current user changes (e.g. logs in or logs out).
     const [user, setUser] = useState(app.currentUser);
-
-    // If a user is logged in, show their details.
-    // Otherwise, show the login screen.
     return (
         <div className="App">
         <div className="App-header">

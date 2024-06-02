@@ -17,13 +17,13 @@ function Tasks() {
   const [isLoadingEvents, setIsLoadingEvents] = useState(false);
   const date = format(new Date(), 'yyyy-MM-dd');
   const userId = app.currentUser?.id;
-  const [selectedStatus, setSelectedStatus] = useState('All'); // Default status filter
+  const [selectedStatus, setSelectedStatus] = useState('All');
   const [currentTask, setCurrentTask] = useState({
     date: date,
     title: '',
     content: '',
-    status: 'In progress', // Default status
-    linkedEvent: null // Initialize linkedEvent as null
+    status: 'In progress',
+    linkedEvent: null
   });
 
   useEffect(() => {
@@ -106,7 +106,7 @@ function Tasks() {
       title: currentTask.title,
       content: currentTask.content,
       status: currentTask.status,
-      linkedEvent: currentTask.linkedEvent // Include linkedEvent in the request body
+      linkedEvent: currentTask.linkedEvent
     };
 
     try {
@@ -172,7 +172,7 @@ function Tasks() {
         },
         });
         if (!response.ok) {
-          throw new Error('Something went wrong!'); // Handling non-2xx responses
+          throw new Error('Something went wrong!');
         }
       } catch (error) {
         console.error("Failed to delete task:", error);
@@ -192,21 +192,20 @@ function Tasks() {
     setCurrentTask({ date: date, title: '', content: '', status: 'In progress', linkedEvent: null });
   };
 
-  // Filter tasks by status
   const filteredTasks = selectedStatus === 'All' ? tasks : tasks.filter(task => task.status === selectedStatus);
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'In progress':
-        return '#FFD700'; // Gold
+        return '#FFD700';
       case 'On hold':
-        return '#FF8C00'; // Dark Orange
+        return '#FF8C00';
       case 'Done':
-        return '#32CD32'; // Lime Green
+        return '#32CD32';
       case 'Canceled':
-        return '#FF4500'; // Orange Red
+        return '#FF4500';
       default:
-        return '#000000'; // Black for unknown status
+        return '#000000';
     }
   };
 

@@ -45,7 +45,7 @@ function EditEvents({ event }) {
         }
       });
       if (!response.ok) {
-        throw new Error('Something went wrong!'); // Handling non-2xx responses
+        throw new Error('Something went wrong!');
       }
       const data = await response.json();
       setProjects(data);
@@ -103,7 +103,7 @@ function EditEvents({ event }) {
         body: JSON.stringify(bodyData)
       });
       if (!response.ok) {
-        throw new Error('Something went wrong!'); // Handling non-2xx responses
+        throw new Error('Something went wrong!');
       }
     } catch (error) {
       console.error("Failed to add events:", error);
@@ -125,7 +125,7 @@ function EditEvents({ event }) {
         },
       });
       if (!response.ok) {
-        throw new Error('Something went wrong!'); // Handling non-2xx responses
+        throw new Error('Something went wrong!');
       }
     } catch (error) {
       console.error("Failed to add events:", error);

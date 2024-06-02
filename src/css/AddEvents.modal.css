@@ -1,15 +1,13 @@
-/* AddEvents.modal.css */
-
 .Container {
   display: flex;
   flex-direction: row;
 }
 
 .nonSelectable {
-  user-select: none; /* Standard syntax */
-  -moz-user-select: none; /* Firefox */
-  -webkit-user-select: none; /* Safari and Chrome */
-  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .Form{

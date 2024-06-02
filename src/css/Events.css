@@ -10,9 +10,9 @@
   }
   
   .event {
-    flex-basis: calc(33.33% - 10px); /* Adjust width as needed */
-    margin-bottom: 20px; /* Adjust spacing between rows */
-    margin-left: 20px; /* Adjust spacing between rows */
+    flex-basis: calc(33.33% - 10px);
+    margin-bottom: 20px;
+    margin-left: 20px;
     min-width: 300px;
     border: 1px solid #ccc;
     border-radius: 8px;

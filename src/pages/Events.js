@@ -11,7 +11,7 @@ function Events() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Default to current month
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,7 +54,7 @@ function Events() {
         }
       });
       if (!response.ok) {
-        throw new Error('Something went wrong!'); // Handling non-2xx responses
+        throw new Error('Something went wrong!');
       }
       const data = await response.json();
       setEvents(data);
@@ -81,7 +81,7 @@ function Events() {
         }
       });
       if (!response.ok) {
-        throw new Error('Something went wrong!'); // Handling non-2xx responses
+        throw new Error('Something went wrong!');
       }
       const data = await response.json();
       setTasks(data);
@@ -103,7 +103,7 @@ function Events() {
       title: task.title,
       content: task.content,
       status: newStatus,
-      linkedEvent: task.linkedEvent // Include linkedEvent in the request body
+      linkedEvent: task.linkedEvent
     };
 
     console.log('Updating task', tasksid, 'with status', newStatus);
@@ -161,10 +161,9 @@ function Events() {
     fetchTasks();
   }, [userId]);
 
-  if (isLoadingEvents || isLoadingTasks) return <div>Loading...</div>; // Loading state
-  if (errorEvents || errorTasks) return <div>{errorEvents || errorTasks}</div>; // Error state
+  if (isLoadingEvents || isLoadingTasks) return <div>Loading...</div>;
+  if (errorEvents || errorTasks) return <div>{errorEvents || errorTasks}</div>;
 
-  // Filter and sort events by selected month
   const filteredEvents = events.filter(event => new Date(event.date).getMonth() + 1 === selectedMonth);
 
   const sortedEvents = filteredEvents.sort((a, b) => {
@@ -195,10 +194,8 @@ function Events() {
         <h2>Events</h2>
         <div className="events-section">
           {sortedEvents.map((event, index) => {
-            // Filter tasks linked to the current event
             const eventTasks = tasks.filter(task => task.linkedEvent === event._id);
 
-            // Calculate summary statistics for the current event
             const totalTasks = eventTasks.length;
             const doneTasks = eventTasks.filter(task => task.status === 'Done').length;
             const percentageDone = totalTasks > 0 ? ((doneTasks / totalTasks) * 100).toFixed(2) : 0;
@@ -237,8 +234,8 @@ function Events() {
                           <select
                             value={task.status}
                             onChange={(e) => {
-                              e.stopPropagation(); // Prevent event bubbling
-                              updateTaskStatus(task, e.target.value); // Pass task and new status
+                              e.stopPropagation();
+                              updateTaskStatus(task, e.target.value);
                             }}
                           >
                             <option value="In progress">In progress</option>

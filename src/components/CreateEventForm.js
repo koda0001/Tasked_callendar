@@ -9,7 +9,7 @@ import styles from '../css/CreateEvent.modal.css';
 const CreateEvent = ({ date, close }) => {
     const navigate = useNavigate();
     const [eventData, setEventData] = useState({
-        date: date, // use the date passed as prop
+        date: date,
         title: '',
         description: ''
     });

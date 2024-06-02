@@ -98,9 +98,9 @@
   background-color: rgb(126, 43, 43);
   border: 1px solid black;
   padding: 20px;
-  width: 100px; /* Adjust as needed */
-  height: 100px; /* Adjust as needed */
-  z-index: 1000; /* Ensure the modal is on top of other content */
+  width: 100px;
+  height: 100px;
+  z-index: 1000;
 }
 
 .eventTitle {

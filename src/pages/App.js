@@ -6,7 +6,7 @@ import Events from './Events';
 import Notes from './Notes';
 import Tasks from './Tasks';
 import Settings from './Settings';
-import "../App.css"; // You can define your styles for the modal here
+import "../App.css";
 
 
 function App() {

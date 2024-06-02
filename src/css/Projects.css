@@ -1,5 +1,3 @@
-/* Projects.css */
-
 .app {
   padding: 20px;
   font-family: 'Arial', sans-serif;
@@ -97,7 +95,7 @@ input[type="text"],
 input[type="datetime-local"],
 textarea,
 select {
-  width: calc(100% - 22px); /* Adjust for padding and border */
+  width: calc(100% - 22px);
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -106,7 +104,7 @@ select {
 }
 
 textarea {
-  resize: vertical; /* Allow vertical resizing */
+  resize: vertical;
 }
 
 form button {
@@ -114,7 +112,7 @@ form button {
 }
 
 form button:last-child {
-  background-color: #dc3545; /* Bootstrap red */
+  background-color: #dc3545;
 }
 
 form button:last-child:hover {

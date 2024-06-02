@@ -8,7 +8,7 @@ import app from '../realm/realmConfig';
 function Login() {
     const [user, setUser] = useState(app.currentUser);
     const [showModal, setShowModal] = useState(false);
-    const [isLogin, setIsLogin] = useState(true); // true for login form, false for register form
+    const [isLogin, setIsLogin] = useState(true);
 
     const openModal = (login = true) => {
         setIsLogin(login);
@@ -21,10 +21,9 @@ function Login() {
 
     const handleLogout = async () => {
         await app.currentUser.logOut();
-        setUser(null); // Update state after logout
+        setUser(null);
     };
 
-    // Show user settings and logout if logged in
     if (user) {
         return (
             <div className="user-settings">
@@ -38,7 +37,6 @@ function Login() {
         );
     }
 
-    // Show login and registration options if not logged in
     return (
         <div className="App">
             <div className="App-header">

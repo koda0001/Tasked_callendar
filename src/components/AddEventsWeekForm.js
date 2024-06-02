@@ -19,11 +19,11 @@ function DayEventList({ events, date, data, position}) {
     const totalSlots = 96;
     const [dragStart, setDragStart] = useState(null);
     const [selectedRange, setSelectedRange] = useState(null);
-    const containerHeight = 600; // Height of the scrollable container in pixels
+    const containerHeight = 600;
     const newEventStartDateTime = `${formatTime(data.startslot * 15).replace(/ /g, '')}`;
     const newEventEndDateTime = `${formatTime((data.endslot + 1) * 15).replace(/ /g, '')}`;
     const [eventData, setEventData] = useState({
-    date: data.date, // use the date passed as prop
+    date: data.date,
     startdate: newEventStartDateTime,
     enddate: newEventEndDateTime,
     startslot: data.startslot,
@@ -66,7 +66,6 @@ function DayEventList({ events, date, data, position}) {
             if (!response.ok) {
             throw new Error('Something went wrong!');
             }
-            // const data = await response.json();
             console.log("Connected correctly to server");
         } catch (error) {
             console.error("Failed to add events:", error);

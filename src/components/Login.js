@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import LoginForm from './LoginForm'; // Assuming this holds the form logic shown previously
-import RegisterForm from './RegisterForm'; // You need to create this component similarly to LoginForm
-import app from '../realm/realmConfig';  // Ensure this path points to where your `app` instance is created
+import LoginForm from './LoginForm';
+import RegisterForm from './RegisterForm';
+import app from '../realm/realmConfig';
 
 
 function Login() {
     const [user, setUser] = useState(app.currentUser);
     const [showModal, setShowModal] = useState(false);
-    const [isLogin, setIsLogin] = useState(true); // true for login form, false for register form
+    const [isLogin, setIsLogin] = useState(true);
 
     const openModal = (login = true) => {
         setIsLogin(login);

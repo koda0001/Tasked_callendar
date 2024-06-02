@@ -25,14 +25,14 @@ const Home = () => {
           }
         });
         if (!response.ok) {
-          throw new Error('Something went wrong!'); // Handling non-2xx responses
+          throw new Error('Something went wrong!');
         }
         const data = await response.json();
         console.log("Connected correctly to server");
 
         const formattedEvents = data.map(event => ({
           ...event,
-          date: new Date(event.date) // Ensuring date is converted to Date object
+          date: new Date(event.date)
         }));
 
         setEvents(formattedEvents);
@@ -47,13 +47,12 @@ const Home = () => {
     fetchEvents();
   }, []);
 
-  if (isLoading) return <div>Loading...</div>; // Loading state
-  if (error) return <div className={StyleSheet.errorMessage}>Please log in to see events</div>; // Error state
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div className={StyleSheet.errorMessage}>Please log in to see events</div>;
 
   return (
     <div className="Container">
       <div className="Home">
-        {/* <h1>My Calendar</h1> */}
         <MyCalendar events={events} />
       </div>
     </div>

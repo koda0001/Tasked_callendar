@@ -1,16 +1,14 @@
-/* App.css */
-
 .Container {
   display: flex;
-  flex-direction: row; /* Aligns nav and Home side by side */
-  height: 100vh; /* Full viewport height */
+  flex-direction: row;
+  height: 100vh;
   box-sizing: border-box;
   overflow: hidden;
 }
 
 .errorMessage {
-  color: #D8000C; /* Red color for error messages */
-  background-color: #FFD2D2; /* Light red background */
+  color: #D8000C;
+  background-color: #FFD2D2;
   padding: 10px 20px;
   border-radius: 8px;
   margin: 10px 0;
@@ -20,11 +18,11 @@
 }
 
 nav {
-  flex: 1; /* Takes 1 part of the flex space */
+  flex: 1;
   background-color: #333;
   padding: 20px;
   display: flex;
-  flex-direction: column; /* Stack links vertically */
+  flex-direction: column;
   box-sizing: border-box;
 }
 
@@ -53,9 +51,6 @@ nav a:hover {
   overflow: auto;
 } 
 
-
-
-/* Optional: Basic styling reset for body to remove default margin/padding */
 body, html {
   margin: 0;
   padding: 0;

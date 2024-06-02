@@ -28,7 +28,7 @@ const MyCalendar = ({ index, date, events = [] }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [eventData, setEventData] = useState({
-    date: date, // use the date passed as prop
+    date: date,
     startdate: '',
     enddate: '',
     startslot: '',
@@ -67,9 +67,8 @@ const MyCalendar = ({ index, date, events = [] }) => {
   }, []);
 
   const calculateModalPosition = () => {
-    // Adjust these values as needed
-    const offsetX = 20; // Distance from mouse pointer
-    const offsetY = 20; // Distance from mouse pointer
+    const offsetX = 20;
+    const offsetY = 20;
 
     const modalX = mousePosition.x + offsetX;
     const modalY = mousePosition.y + offsetY;
@@ -81,7 +80,7 @@ const MyCalendar = ({ index, date, events = [] }) => {
     .filter(event => {
       const eventDate = new Date(event.date);
       const eventToMatch = new Date(date);
-      return eventDate.toDateString() === eventToMatch.toDateString(); // Compares only the date part
+      return eventDate.toDateString() === eventToMatch.toDateString();
     })
     .sort((a, b) => {
       const dateA = new Date(a.date);
@@ -172,10 +171,10 @@ const MyCalendar = ({ index, date, events = [] }) => {
 
   const generateFullHourTimeSlots = (date) => {
     const slots = [];
-    let currentTime = new Date(date.setHours(0, 0, 0, 0)); // Start at midnight
-    while (currentTime <= new Date(date.setHours(23, 0, 0, 0))) { // Go up to 23:00
+    let currentTime = new Date(date.setHours(0, 0, 0, 0));
+    while (currentTime <= new Date(date.setHours(23, 0, 0, 0))) {
       slots.push(new Date(currentTime));
-      currentTime = addHours(currentTime, 1); // Add one hour
+      currentTime = addHours(currentTime, 1);
     }
     return slots;
   };
@@ -194,10 +193,10 @@ const MyCalendar = ({ index, date, events = [] }) => {
     if (dragStart !== null) {
       const startSlot = Math.min(dragStart, index);
       const endSlot = Math.max(dragStart, index);
-      setDragColumnDate(format(date, 'dd-MM')); // Store the column's date
+      setDragColumnDate(format(date, 'dd-MM'));
 
-      const offsetX = 20; // Distance from mouse pointer
-      const offsetY = 20; // Distance from mouse pointer
+      const offsetX = 20;
+      const offsetY = 20;
 
       const modalX = mousePosition.x + offsetX;
       const modalY = mousePosition.y + offsetY;
@@ -218,7 +217,6 @@ const MyCalendar = ({ index, date, events = [] }) => {
       setDragStart(null);
 
       setModalPosition({ x: modalX, y: modalY });
-      console.log('modal pos', modalPosition);
     }
   };
 
@@ -274,13 +272,13 @@ const MyCalendar = ({ index, date, events = [] }) => {
     position: 'fixed',
     top: modalPosition.y,
     left: modalPosition.x,
-    transform: 'translate(-50%, -50%)', // Center the modal
+    transform: 'translate(-50%, -50%)',
     backgroundColor: 'white',
     border: '1px solid black',
     padding: '20px',
     width: '200px',
     height: '300px',
-    zIndex: 9999, // Ensure the modal is on top of other elements
+    zIndex: 9999,
   };
 
   const renderWeekView = () => {
@@ -299,7 +297,6 @@ const MyCalendar = ({ index, date, events = [] }) => {
           ))}
         </div>
         <div className={styles.gridweek}>
-          {/* Render time legend */}
           <div className={styles.timeLegend}>
             {timelegendslots.map((time, index) => (
               <div key={index} className={styles.timeLabel}>
@@ -307,7 +304,6 @@ const MyCalendar = ({ index, date, events = [] }) => {
               </div>
             ))}
           </div>
-          {/* Render time slots for each day */}
           {dates.map((date, dateIndex) => {
             const dateStr = format(date, 'yyyy-MM-dd');
             return (
@@ -352,7 +348,7 @@ const MyCalendar = ({ index, date, events = [] }) => {
         {dates.map((date, index) => {
           const dayEvents = events
             .filter(event => format(new Date(event.date), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
-            .sort((a, b) => a.startslot - b.startslot); // Sort based on startslot
+            .sort((a, b) => a.startslot - b.startslot);
   
           return (
             <div
