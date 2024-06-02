@@ -248,6 +248,20 @@ async function main() {
       }
     });
 
+    exp.post('/api/deletenote', async (req, res) => {
+      try {
+        const noteId = req.headers.noteid;
+        const eventsCollection = db.collection('notes');
+        await eventsCollection.deleteOne(
+          { _id: new ObjectId(noteId) },
+        );
+        res.json({ message: "Note deleted successfully" });
+      } catch (error) {
+        console.log("Error in deleting note:", error);
+        res.status(500).json({ message: "Error deleting note ", error });
+      }
+    });
+
     exp.post('/api/deleteproject', async (req, res) => {
       try {
         const projectId = req.headers.projectid;

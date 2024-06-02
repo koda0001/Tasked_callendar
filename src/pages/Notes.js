@@ -117,6 +117,29 @@ const Notes = () => {
     }
   };
 
+  const deleteNote = async () => {
+    const noteid = currentNote._id;
+    const userid = app.currentUser.id;
+
+    try {
+      const response = await fetch('http://localhost:3002/api/deletenote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': userid,
+          'noteid' : noteid      
+        },
+        });
+        if (!response.ok) {
+          throw new Error('Something went wrong!');
+        }
+      } catch (error) {
+        console.error("Failed to delete note:", error);
+    }
+    navigate('/notes');
+    window.location.reload();
+  };
+
   const handleOpenModal = (note = { date: date, title: '', content: '' }) => {
     setCurrentNote(note);
     setIsEditing(!!note.title);
@@ -155,6 +178,7 @@ const Notes = () => {
           />
           <button type="submit">Save Note</button>
           <button type="button" onClick={handleCloseModal}>Cancel</button>
+          {isEditing ? <button type="button" onClick={deleteNote}>Delete Note</button> : ' '}
         </form>
       </Modal>
     </div>

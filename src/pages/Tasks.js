@@ -275,7 +275,7 @@ function Tasks() {
           </select>
           <button type="submit">Save Task</button>
           <button type="button" onClick={handleCloseModal}>Cancel</button>
-          <button type="button" onClick={deleteTask}>Delete Task</button>
+          {isEditing ? <button type="button" onClick={deleteTask}>Delete Task</button> : ' '}
         </form>
       </Modal>
     </div>
