@@ -1,11 +1,35 @@
+/* AddEvents.modal.css */
+
 .Container {
-    display: flex;
-    flex-direction: row;
-  }
-  
+  display: flex;
+  flex-direction: row;
+}
+
 .nonSelectable {
-    user-select: none; /* Standard syntax */
-    -moz-user-select: none; /* Firefox */
-    -webkit-user-select: none; /* Safari and Chrome */
-    -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Standard syntax */
+  -moz-user-select: none; /* Firefox */
+  -webkit-user-select: none; /* Safari and Chrome */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.Form{
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.slot {
+  height: 25px;
+  line-height: 40px;
+  border-bottom: 1px solid #ccc;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.slot:hover {
+  background-color: #f0f0f0;
+}
+
+.slot.selected {
+  background-color: #007bff;
+  color: #fff;
 }

@@ -11,6 +11,7 @@ function Events() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Default to current month
   const [showEditModal, setShowEditModal] = useState(false);
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -163,8 +164,10 @@ function Events() {
   if (isLoadingEvents || isLoadingTasks) return <div>Loading...</div>; // Loading state
   if (errorEvents || errorTasks) return <div>{errorEvents || errorTasks}</div>; // Error state
 
-  // Sorting events by date and start time
-  const sortedEvents = events.sort((a, b) => {
+  // Filter and sort events by selected month
+  const filteredEvents = events.filter(event => new Date(event.date).getMonth() + 1 === selectedMonth);
+
+  const sortedEvents = filteredEvents.sort((a, b) => {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
     if (dateA.getTime() !== dateB.getTime()) return dateA - dateB;
@@ -176,6 +179,18 @@ function Events() {
 
   return (
     <div className="app">
+      <div className="filter-section">
+        <label htmlFor="month-select">Filter by month: </label>
+        <select
+          id="month-select"
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(Number(e.target.value))}
+        >
+          {Array.from({ length: 12 }, (_, i) => (
+            <option key={i + 1} value={i + 1}>{format(new Date(0, i), 'MMMM')}</option>
+          ))}
+        </select>
+      </div>
       <div className="events-grid">
         <h2>Events</h2>
         <div className="events-section">
@@ -224,7 +239,6 @@ function Events() {
                             onChange={(e) => {
                               e.stopPropagation(); // Prevent event bubbling
                               updateTaskStatus(task, e.target.value); // Pass task and new status
-                              
                             }}
                           >
                             <option value="In progress">In progress</option>

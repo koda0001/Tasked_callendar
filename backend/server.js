@@ -28,8 +28,6 @@ async function main() {
         const events = await eventsCollection.find(
           {'userid' : `${userId}` }
         ).toArray();
-        // console.log(events); // Log all events
-        // console.log("userID: ", userId); // Log all events
         res.json(events);
       } catch (error) {
         console.log("Error in fetching events:", error);
@@ -44,8 +42,6 @@ async function main() {
         const projects = await projectsCollection.find(
           {'userid' : `${userId}` }
         ).toArray();
-        // console.log(events); // Log all events
-        // console.log("userID: ", userId); // Log all events
         res.json(projects);
         console.log('projects', projects);
       } catch (error) {
@@ -61,8 +57,6 @@ async function main() {
         const tasks = await tasksCollection.find(
           {'userid' : `${userId}` }
         ).toArray();
-        // console.log(events); // Log all events
-        // console.log("userID: ", userId); // Log all events
         res.json(tasks);
       } catch (error) {
         console.log("Error in fetching tasks:", error);
@@ -77,8 +71,6 @@ async function main() {
         const events = await eventsCollection.find(
           {'userid' : `${userId}` }
         ).toArray();
-        // console.log(events); // Log all events
-        // console.log("userID: ", userId); // Log all events
         res.json(events);
       } catch (error) {
         console.log("Error in fetching notes:", error);
@@ -88,7 +80,7 @@ async function main() {
 
     exp.post('/api/addevent', async (req, res) => {
       try {
-        const { userid, date, startdate, enddate, startslot, endslot, title, description, linkedProject } = req.body; // Extracting from the body now
+        const { userid, date, startdate, enddate, startslot, endslot, title, description, linkedProject } = req.body;
         const eventsCollection = db.collection('events');
         await eventsCollection.insertOne({
           userid: userid,
@@ -110,7 +102,7 @@ async function main() {
 
     exp.post('/api/addnote', async (req, res) => {
       try {
-        const { userid, date, title, content } = req.body; // Extracting from the body now
+        const { userid, date, title, content } = req.body;
         const eventsCollection = db.collection('notes');
         await eventsCollection.insertOne({
           userid: userid,
@@ -121,13 +113,13 @@ async function main() {
         res.json({ message: "Note added successfully" });
       } catch (error) {
         console.log("Error in adding note:", error);
-        res.status(500).json({ message: "Error adding note data", error });
+        res.status(500).json({ message: "Error adding data", error });
       }
     });
   
     exp.post('/api/addtask', async (req, res) => {
       try {
-        const { userid, date, title, content, status, linkedEvent } = req.body; // Extracting from the body now
+        const { userid, date, title, content, status, linkedEvent } = req.body;
         const eventsCollection = db.collection('tasks');
         await eventsCollection.insertOne({
           userid: userid,
@@ -135,12 +127,12 @@ async function main() {
           title: title,
           content: content,
           status: status,
-          linkedEvent: linkedEvent, // Add status to the task document
+          linkedEvent: linkedEvent,
         });
         res.json({ message: "Task added successfully" });
       } catch (error) {
         console.log("Error in adding Task:", error);
-        res.status(500).json({ message: "Error adding note data", error });
+        res.status(500).json({ message: "Error adding data", error });
       }
     });
 
@@ -168,8 +160,6 @@ async function main() {
       try {
         const eventId = req.headers.eventid;
         const updates = req.body;
-        console.log('id: ', eventId)
-        console.log('body: ', updates)
         const eventsCollection = db.collection('events');
         await eventsCollection.updateOne(
           { _id: new ObjectId(eventId) },
@@ -186,8 +176,6 @@ async function main() {
       try {
         const notesId = req.headers.notesid;
         const updates = req.body;
-        console.log('id: ', notesId)
-        console.log('body: ', updates)
         const eventsCollection = db.collection('notes');
         await eventsCollection.updateOne(
           { _id: new ObjectId(notesId) },
@@ -204,8 +192,6 @@ async function main() {
       try {
         const taskId = req.headers.taskid; // Use 'taskid' header
         const updates = req.body;
-        console.log('update task id: ', taskId);
-        console.log('update task body: ', updates);
         const eventsCollection = db.collection('tasks');
         await eventsCollection.updateOne(
           { _id: new ObjectId(taskId) },
@@ -223,7 +209,6 @@ async function main() {
         const projectId = req.headers.projectid;
         const updates = req.body;
         const projectCollection = db.collection('projects');
-        console.log('projectid in server is:', projectId);
         await projectCollection.updateOne(
           { _id: new ObjectId(projectId) },
           { $set: updates }
@@ -238,7 +223,6 @@ async function main() {
     exp.post('/api/deleteevent', async (req, res) => {
       try {
         const eventId = req.headers.eventid;
-        console.log('id: ', eventId)
         const eventsCollection = db.collection('events');
         await eventsCollection.deleteOne(
           { _id: new ObjectId(eventId) },
@@ -253,7 +237,6 @@ async function main() {
     exp.post('/api/deletetask', async (req, res) => {
       try {
         const taskId = req.headers.taskid;
-        console.log('delete task id: ', taskId)
         const eventsCollection = db.collection('tasks');
         await eventsCollection.deleteOne(
           { _id: new ObjectId(taskId) },
@@ -268,8 +251,6 @@ async function main() {
     exp.post('/api/deleteproject', async (req, res) => {
       try {
         const projectId = req.headers.projectid;
-        console.log('id: ', projectId)
-        console.log('delete project id: ', projectId)
         const eventsCollection = db.collection('projects');
         await eventsCollection.deleteOne(
           { _id: new ObjectId(projectId) },

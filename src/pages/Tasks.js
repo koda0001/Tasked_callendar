@@ -17,6 +17,7 @@ function Tasks() {
   const [isLoadingEvents, setIsLoadingEvents] = useState(false);
   const date = format(new Date(), 'yyyy-MM-dd');
   const userId = app.currentUser?.id;
+  const [selectedStatus, setSelectedStatus] = useState('All'); // Default status filter
   const [currentTask, setCurrentTask] = useState({
     date: date,
     title: '',
@@ -180,7 +181,7 @@ function Tasks() {
     window.location.reload();
   };
 
-  const handleOpenModal = (task = { date: date, title: '', content: '', status: 'In progress' }) => {
+  const handleOpenModal = (task = { date: date, title: '', content: '', status: 'In progress', linkedEvent: null }) => {
     setCurrentTask(task);
     setIsEditing(!!task.title);
     setIsModalOpen(true);
@@ -191,12 +192,49 @@ function Tasks() {
     setCurrentTask({ date: date, title: '', content: '', status: 'In progress', linkedEvent: null });
   };
 
+  // Filter tasks by status
+  const filteredTasks = selectedStatus === 'All' ? tasks : tasks.filter(task => task.status === selectedStatus);
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'In progress':
+        return '#FFD700'; // Gold
+      case 'On hold':
+        return '#FF8C00'; // Dark Orange
+      case 'Done':
+        return '#32CD32'; // Lime Green
+      case 'Canceled':
+        return '#FF4500'; // Orange Red
+      default:
+        return '#000000'; // Black for unknown status
+    }
+  };
+
   return (
     <div className="app">
+      <div className="filter-section">
+        <label htmlFor="status-select">Filter by status: </label>
+        <select
+          id="status-select"
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+        >
+          <option value="All">All</option>
+          <option value="In progress">In progress</option>
+          <option value="On hold">On hold</option>
+          <option value="Done">Done</option>
+          <option value="Canceled">Canceled</option>
+        </select>
+      </div>
       <button onClick={() => handleOpenModal()}>Add Task</button>
       <div className="tasks-grid">
-        {tasks.map((task, index) => (
-          <div key={index} className="task" onClick={() => handleOpenModal(task)}>
+        {filteredTasks.map((task, index) => (
+          <div
+            key={index}
+            className="task"
+            style={{ backgroundColor: getStatusColor(task.status) }}
+            onClick={() => handleOpenModal(task)}
+          >
             {task.title}
           </div>
         ))}
@@ -226,24 +264,23 @@ function Tasks() {
             <option value="Canceled">Canceled</option>
           </select>
           <select
-              value={currentTask.linkedEvent}
-              onChange={(e) => setCurrentTask({ ...currentTask, linkedEvent: e.target.value })}
-            >
-              <option value="">Select an event...</option>
-              {events.map(event => (
-                <option key={event._id} value={event._id}>
-                  {event.title}
-                </option>
-              ))}
-            </select>
-            <button type="submit">Save Task</button>
-            <button type="button" onClick={handleCloseModal}>Cancel</button>
-            <button onClick={deleteTask}>Delete Task</button>
-          </form>
-        </Modal>
-      </div>
-    );
-  };
-  
-  export default Tasks;
-  
+            value={currentTask.linkedEvent}
+            onChange={(e) => setCurrentTask({ ...currentTask, linkedEvent: e.target.value })}
+          >
+            <option value="">Select an event...</option>
+            {events.map(event => (
+              <option key={event._id} value={event._id}>
+                {event.title}
+              </option>
+            ))}
+          </select>
+          <button type="submit">Save Task</button>
+          <button type="button" onClick={handleCloseModal}>Cancel</button>
+          <button type="button" onClick={deleteTask}>Delete Task</button>
+        </form>
+      </Modal>
+    </div>
+  );
+}
+
+export default Tasks;

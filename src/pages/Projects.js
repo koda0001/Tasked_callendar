@@ -13,6 +13,7 @@ function Projects() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Default to current month
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +23,7 @@ function Projects() {
     description: '',
     startTime: '',
     endTime: '',
-    events: ['',''],
+    events: [],
   });
   const userId = app.currentUser?.id;
   const formattedDate = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
@@ -97,12 +98,12 @@ function Projects() {
     const userid = app.currentUser.id;
     const projectid = currentProject._id;
     const bodyData = {
-        userid: userid,
-        title: currentProject.title,
-        description: currentProject.description,
-        startTime: currentProject.startTime,
-        endTime: currentProject.endTime,
-        events: currentProject.events,
+      userid: userid,
+      title: currentProject.title,
+      description: currentProject.description,
+      startTime: currentProject.startTime,
+      endTime: currentProject.endTime,
+      events: currentProject.events,
     };
     try {
       const response = await fetch(`http://localhost:3002/api/${isEditing ? 'updateproject' : 'addproject'}`, {
@@ -139,14 +140,14 @@ function Projects() {
         headers: {
           'Content-Type': 'application/json',
           'authorization': userid,
-          'projectid' : projectid      
+          'projectid': projectid
         },
-        });
-        if (!response.ok) {
-          throw new Error('Something went wrong!'); // Handling non-2xx responses
-        }
-      } catch (error) {
-        console.error("Failed to delete project:", error);
+      });
+      if (!response.ok) {
+        throw new Error('Something went wrong!'); // Handling non-2xx responses
+      }
+    } catch (error) {
+      console.error("Failed to delete project:", error);
     }
     navigate('/projects');
     window.location.reload();
@@ -172,11 +173,28 @@ function Projects() {
   if (isLoading) return <div>Loading...</div>; // Loading state
   if (error) return <div>Please log in to see projects and events</div>; // Error state
 
+  // Filter and sort projects by selected month
+  const filteredProjects = projects.filter(project => new Date(project.startTime).getMonth() + 1 === selectedMonth);
+
+  const sortedProjects = filteredProjects.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
   return (
     <div className="app">
+      <div className="filter-section">
+        <label htmlFor="month-select">Filter by month: </label>
+        <select
+          id="month-select"
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(Number(e.target.value))}
+        >
+          {Array.from({ length: 12 }, (_, i) => (
+            <option key={i + 1} value={i + 1}>{format(new Date(0, i), 'MMMM')}</option>
+          ))}
+        </select>
+      </div>
       <button onClick={() => handleOpenModal()}>Add Project</button>
       <div className="projects-grid">
-        {projects.map((project, index) => (
+        {sortedProjects.map((project, index) => (
           <div key={index} className="project" onClick={() => handleOpenModal(project)}>
             <h3>{project.title}</h3>
             <p>{project.description}</p>
@@ -221,7 +239,7 @@ function Projects() {
           />
           <button type="submit">Save Project</button>
           <button type="button" onClick={handleCloseModal}>Cancel</button>
-          <button onClick={deleteProject}>Delete Task</button>
+          {isEditing && <button onClick={deleteProject}>Delete Project</button>}
         </form>
       </Modal>
       <Modal isOpen={showEditModal} close={closeEditModal} onRequestClose={closeEditModal} contentLabel="Edit Event Modal">

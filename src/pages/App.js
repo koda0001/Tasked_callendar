@@ -17,8 +17,8 @@ function App() {
           <Link to="/">Home</Link>
           <Link to="/events">Events</Link>
           <Link to="/projects">Projects</Link>
-          <Link to="/notes">Notes</Link>
           <Link to="/tasks">Tasks</Link>
+          <Link to="/notes">Notes</Link>
           <Link to="/settings">Settings</Link>
         </nav>
         <div className="Home">
@@ -26,8 +26,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/events" element={<Events />} />
             <Route path="/projects" element={<Projects />} />
-            <Route path="/notes" element={<Notes />} />
             <Route path="/tasks" element={<Tasks />} />
+            <Route path="/notes" element={<Notes />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>

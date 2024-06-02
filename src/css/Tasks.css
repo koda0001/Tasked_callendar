@@ -2,6 +2,7 @@
 
 .app {
   padding: 20px;
+  font-family: 'Arial', sans-serif;
 }
 
 .tasks-grid {
@@ -22,4 +23,67 @@
 
 .task:hover {
   transform: scale(1.05);
+}
+
+.filter-section {
+  margin-bottom: 20px;
+}
+
+.filter-section label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.filter-section select {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007BFF;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #a3a3a3;
+  cursor: not-allowed;
+}
+
+input[type="text"],
+textarea,
+select {
+  width: calc(100% - 22px); /* Adjust for padding and border */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+textarea {
+  resize: vertical; /* Allow vertical resizing */
+}
+
+form button {
+  margin-right: 10px;
+}
+
+form button:last-child {
+  background-color: #dc3545; /* Bootstrap red */
+}
+
+form button:last-child:hover {
+  background-color: #c82333;
 }

@@ -4,7 +4,7 @@ import Modal from '../components/Modal';
 import AddEvents from './AddEventsForm';
 import AddWeekEvents from './AddEventsWeekForm';
 import EditEvents from './EditEventsForm';
-import { blueGrey } from '@mui/material/colors';
+import { blue } from '@mui/material/colors';
 import styles from '../css/MyCallendar.module.css';
 import { da } from 'date-fns/locale/da';
 
@@ -250,20 +250,25 @@ const MyCalendar = ({ index, date, events = [] }) => {
 
   const getSlotStyle = (index, dateStr) => {
     let style = { backgroundColor: 'white', border: '1px solid black', height: '15px' };
-
+  
     if (selectedRange && index >= selectedRange.start && index <= selectedRange.end && dragColumnDate === dateStr) {
-      style.backgroundColor = blueGrey[100];
+      style.backgroundColor = blue[100];
     }
-
+  
     events.forEach(event => {
       const eventDateStr = format(new Date(event.date), 'yyyy-MM-dd');
       if (eventDateStr === dateStr && index >= event.startslot && index <= event.endslot) {
-        style.backgroundColor = blueGrey[300]; // Adjust the color to indicate the slot is taken
+        style.backgroundColor = blue[600];
+        style.borderTopColor = blue[600];
+        style.borderBottomColor = blue[600];
       }
     });
-
+  
     return style;
   };
+  
+  
+  
 
   const modalStyle = {
     position: 'fixed',

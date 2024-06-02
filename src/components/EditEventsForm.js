@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import app from '../realm/realmConfig';
+import '../css/EditEvents.css';
 
 const formatTime = (slot) => {
   const minutesFromMidnight = slot * 15;
@@ -80,15 +81,15 @@ function EditEvents({ event }) {
     const newEndSlot = parseTimeToSlot(endTime);
     const userid = app.currentUser.id;
     const bodyData = {
-        userid: userid,
-        date: eventdate,
-        startdate: startTime,
-        enddate: endTime,
-        startslot: newStartSlot,
-        endslot: newEndSlot,
-        title: eventData.title,
-        description: eventData.description,
-        linkedProject: eventData.linkedProject,
+      userid: userid,
+      date: eventdate,
+      startdate: startTime,
+      enddate: endTime,
+      startslot: newStartSlot,
+      endslot: newEndSlot,
+      title: eventData.title,
+      description: eventData.description,
+      linkedProject: eventData.linkedProject,
     };
     console.log('Updated Event Data:', bodyData);
     try {
@@ -97,18 +98,18 @@ function EditEvents({ event }) {
         headers: {
           'Content-Type': 'application/json',
           'authorization': userid,
-          'eventid' : eventid      
+          'eventid': eventid
         },
-        body : JSON.stringify(bodyData)
-        });
-        if (!response.ok) {
-          throw new Error('Something went wrong!'); // Handling non-2xx responses
-        }
-      } catch (error) {
-        console.error("Failed to add events:", error);
+        body: JSON.stringify(bodyData)
+      });
+      if (!response.ok) {
+        throw new Error('Something went wrong!'); // Handling non-2xx responses
       }
-      navigate('/');
-      window.location.reload();
+    } catch (error) {
+      console.error("Failed to add events:", error);
+    }
+    navigate('/');
+    window.location.reload();
   };
 
   const deleteEvent = async () => {
@@ -120,14 +121,14 @@ function EditEvents({ event }) {
         headers: {
           'Content-Type': 'application/json',
           'authorization': userid,
-          'eventid' : eventid      
+          'eventid': eventid
         },
-        });
-        if (!response.ok) {
-          throw new Error('Something went wrong!'); // Handling non-2xx responses
-        }
-      } catch (error) {
-        console.error("Failed to add events:", error);
+      });
+      if (!response.ok) {
+        throw new Error('Something went wrong!'); // Handling non-2xx responses
+      }
+    } catch (error) {
+      console.error("Failed to add events:", error);
     }
     navigate('/');
     window.location.reload();
@@ -188,7 +189,7 @@ function EditEvents({ event }) {
           </select>
         </label>
         <button type="submit">Save Changes</button>
-      <button onClick={deleteEvent}>Delete Event</button>
+        <button type="button" onClick={deleteEvent}>Delete Event</button>
       </form>
     </div>
   );

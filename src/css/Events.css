@@ -70,22 +70,22 @@
   }
   
   .task-status-done {
-    background-color: green;
+    background-color: #32CD32;
     color: white;
   }
   
   .task-status-in-progress {
-    background-color: yellow;
+    background-color: #FFD700;
     color: black;
   }
   
   .task-status-on-hold {
-    background-color: grey;
+    background-color: #FF8C00;
     color: white;
   }
   
   .task-status-canceled {
-    background-color: red;
+    background-color: #FF4500;
     color: white;
   }
   

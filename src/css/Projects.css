@@ -1,27 +1,28 @@
 /* Projects.css */
 
 .app {
-    padding: 20px;
-  }
-  
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-  }
-  
-  .project {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s;
-  }
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
 
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.project {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s, border-color 0.3s;
+}
 
 .project:hover {
+  transform: scale(1.05);
   border-color: #555;
 }
 
@@ -47,12 +48,77 @@
   color: #fff;
   border: none;
   padding: 5px 10px;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .project button:hover {
   background-color: #0056b3;
+}
+
+.filter-section {
+  margin-bottom: 20px;
+}
+
+.filter-section label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.filter-section select {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+input[type="text"],
+input[type="datetime-local"],
+textarea,
+select {
+  width: calc(100% - 22px); /* Adjust for padding and border */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+textarea {
+  resize: vertical; /* Allow vertical resizing */
+}
+
+form button {
+  margin-right: 10px;
+}
+
+form button:last-child {
+  background-color: #dc3545; /* Bootstrap red */
+}
+
+form button:last-child:hover {
+  background-color: #c82333;
 }
 
 .modal-content {
@@ -87,6 +153,7 @@
   color: #fff;
   border: none;
   padding: 8px 16px;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -103,8 +170,17 @@
 .modal-footer button {
   background-color: #6c757d;
   color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .modal-footer button:first-child {
   background-color: #dc3545;
+}
+
+.modal-footer button:first-child:hover {
+  background-color: #c82333;
 }

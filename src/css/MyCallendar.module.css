@@ -3,7 +3,6 @@
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-  height: 60vw; /* Ensures the container fits according to viewport width */
   padding: 10px;
   background-color: #f9f9f9;
 }
@@ -11,19 +10,19 @@
 .controls {
   margin-bottom: 20px;
   display: flex;
-  width: 100%; /* Fits the parent width */
+  width: 100%;
   justify-content: center;
 }
 
 .weekContainer {
   display: flex;
-  flex-direction: column; /* Adjusted to row for horizontal layout */
+  flex-direction: column;
   align-items: stretch;
   background-color: #ffffff;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  overflow-x: auto; /* Enable horizontal scrolling if needed */
-  overflow-y: hidden; /* Hide vertical scrollbar */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  overflow-y: hidden;
   width: 100%;
   max-height: 85vh;
 }
@@ -53,7 +52,7 @@
 .gridweek {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  overflow-x: auto; 
+  overflow-x: auto;
   gap: 10px;
   width: 100%;
   max-width: 100%;
@@ -62,7 +61,7 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  overflow-x: auto; /* Enable horizontal scrolling if needed */
+  overflow-x: auto;
   gap: 10px;
   width: 100%;
   max-width: 100%;
@@ -75,73 +74,11 @@
   display: flex;
   flex-direction: column;
   min-height: 80px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-
-.dayLegend {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 10px;
-  height: fit-content;
-  width: 100%;
-  max-width: 100%;
-  background: #f0f0f0; /* Moved background color here */
-}
-.space{
-  width: 50px;
-}
-
-.timeLegend {
-  display: flex;
-  flex-direction: column;
-  background: #f0f0f0;
-  width: 50px; /* Ensure consistent width for the time legend column */
-}
-
-.timedayscontainer {
-  display: flex;
-  flex-direction: column; /* Adjusted to column for vertical layout */
-  flex-grow: 1; /* Allow container to grow */
-}
-
-.dayView, .weekView, .weekDays {
-  max-height: 700px;
-}
-
-.timeSlot {
-  height: 11px;
-  padding: 2px;
-  border-bottom: solid 1px #c6c6c6;
-  /* box-sizing: border-box; */
-}
-.timeLabel {
-  height: 100%;
-  padding: 2px;
-  width: 6vw;
-  max-width: 6vw;
-  border-bottom: solid 1px #c6c6c6;
-  box-sizing: border-box;
-}
-
-.TDays {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-}
-
-.dateColumn {
-  flex-grow: 1; /* Ensures all columns expand evenly */
-}
-
-.dayColumn {
-  border-right: 1px solid #ccc;
-  display: flex;
-  flex-direction: column;
-  width: 9vw;
-  user-select: none; /* Standard syntax */
-  -moz-user-select: none; /* Firefox */
-  -webkit-user-select: none; /* Safari and Chrome */
-  -ms-user-select: none; /* Internet Explorer/Edge */
+.dateCell:hover {
+  background-color: #f4f4f4;
 }
 
 .today {
@@ -153,11 +90,7 @@
   border: 2px solid #e8cc77;
 }
 
-.dateCell:hover {
-  background-color: #f4f4f4;
-}
-
-.modal-content{
+.modal-content {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -171,15 +104,36 @@
 }
 
 .eventTitle {
-  display: block;
-  color: white;
   font-size: 0.7em;
-  padding: 2px;
-  border-radius: 3px;
-  overflow: hidden;
+  border: 2px;
+  border-bottom: #ccc;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.timeLegend {
+  display: flex;
+  flex-direction: column;
+  background: #f0f0f0;
+  width: 50px;
+}
 
+.timeLabel {
+  height: 100%;
+  padding: 2px;
+  width: 6vw;
+  max-width: 6vw;
+  border-bottom: solid 1px #c6c6c6;
+  box-sizing: border-box;
+}
+
+.dayLegend {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+  height: fit-content;
+  width: 100%;
+  max-width: 100%;
+  background: #f0f0f0;
+}
 
