@@ -212,8 +212,11 @@ function Projects() {
           </div>
         ))}
       </div>
+
       <Modal isOpen={isModalOpen} close={handleCloseModal} onRequestClose={handleCloseModal} contentLabel="Project Modal">
+
         <h2>{isEditing ? 'Edit Project' : 'Add Project'}</h2>
+
         <form onSubmit={createOrUpdateProject}>
           <input
             type="text"
@@ -236,14 +239,17 @@ function Projects() {
             value={currentProject.endTime}
             onChange={(e) => setCurrentProject({ ...currentProject, endTime: e.target.value })}
           />
+          
           <button type="submit">Save Project</button>
           <button type="button" onClick={handleCloseModal}>Cancel</button>
           {isEditing && <button onClick={deleteProject}>Delete Project</button>}
+
         </form>
       </Modal>
       <Modal isOpen={showEditModal} close={closeEditModal} onRequestClose={closeEditModal} contentLabel="Edit Event Modal">
         <EditEvents event={selectedEvent} date={formattedDate}/>
       </Modal>
+
     </div>
   );
 }

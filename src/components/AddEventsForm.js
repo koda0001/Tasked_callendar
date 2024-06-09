@@ -181,7 +181,7 @@ function DayEventList({ events, date, index }) {
             })}
           </div>
           <div className='Form'>
-            <h1>Event on: {date}</h1>
+            <h2>Event on: {date}</h2>
             {selectedRange && (
               <div>
                 <p>Start Time: {formatTime(selectedRange.start * 15)}</p>

@@ -10,6 +10,7 @@ const Home = () => {
   const userId = app.currentUser?.id;
 
   useEffect(() => {
+
     const fetchEvents = async () => {
       if (!userId) {
         setError('Please log in to see events');
@@ -46,6 +47,7 @@ const Home = () => {
 
     fetchEvents();
   }, []);
+  
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div className={StyleSheet.errorMessage}>Please log in to see events</div>;

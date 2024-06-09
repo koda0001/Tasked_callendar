@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../components/Modal';
 import app from '../realm/realmConfig';
+
 import EditEvents from '../components/EditEventsForm';
+
 import { format, parse } from 'date-fns';
+
 import '../css/Events.css';
 
 function Events() {
@@ -126,6 +129,7 @@ function Events() {
       console.log("Connected correctly to server");
       setIsLoading(true);
       setError(null);
+      
       const fetchUpdatedTasks = async () => {
         try {
           const response = await fetch(`http://localhost:3002/api/tasks?userId=${userId}`, {
@@ -193,6 +197,7 @@ function Events() {
       <div className="events-grid">
         <h2>Events</h2>
         <div className="events-section">
+
           {sortedEvents.map((event, index) => {
             const eventTasks = tasks.filter(task => task.linkedEvent === event._id);
 

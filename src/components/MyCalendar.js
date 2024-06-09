@@ -159,15 +159,6 @@ const MyCalendar = ({ index, date, events = [] }) => {
     setSelectedEvent(null);
   };
 
-  const generateTimeSlots = (date) => {
-    const slots = [];
-    let currentTime = new Date(date.setHours(0, 0, 0, 0));
-    while (currentTime < new Date(date.setHours(23, 59, 0, 0))) {
-      slots.push(new Date(currentTime));
-      currentTime = addMinutes(currentTime, 15);
-    }
-    return slots;
-  };
 
   const generateFullHourTimeSlots = (date) => {
     const slots = [];
@@ -195,11 +186,10 @@ const MyCalendar = ({ index, date, events = [] }) => {
       const endSlot = Math.max(dragStart, index);
       setDragColumnDate(format(date, 'dd-MM'));
 
-      const offsetX = 20;
-      const offsetY = 20;
-
-      const modalX = mousePosition.x + offsetX;
-      const modalY = mousePosition.y + offsetY;
+      // const offsetX = 20;
+      // const offsetY = 20;
+      // const modalX = mousePosition.x + offsetX;
+      // const modalY = mousePosition.y + offsetY;
 
       const newEventStartDateTime = `${formatTime(startSlot * 15).replace(/ /g, '')}`;
       const newEventEndDateTime = `${formatTime((endSlot + 1) * 15).replace(/ /g, '')}`;
@@ -216,7 +206,7 @@ const MyCalendar = ({ index, date, events = [] }) => {
       setSelectedRange({ start: startSlot, end: endSlot });
       setDragStart(null);
 
-      setModalPosition({ x: modalX, y: modalY });
+      // setModalPosition({ x: modalX, y: modalY });
     }
   };
 
@@ -264,9 +254,7 @@ const MyCalendar = ({ index, date, events = [] }) => {
   
     return style;
   };
-  
-  
-  
+
 
   const modalStyle = {
     position: 'fixed',
@@ -376,9 +364,6 @@ const MyCalendar = ({ index, date, events = [] }) => {
     );
   };
   
-  
-  
-
   const renderCalendarView = () => {
     switch (view) {
       case 'week':

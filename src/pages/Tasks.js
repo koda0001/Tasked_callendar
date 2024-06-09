@@ -27,6 +27,7 @@ function Tasks() {
   });
 
   useEffect(() => {
+    
     const fetchTasks = async () => {
       if (!userId) {
         setError('Please log in to see tasks');
@@ -226,6 +227,7 @@ function Tasks() {
         </select>
       </div>
       <button onClick={() => handleOpenModal()}>Add Task</button>
+
       <div className="tasks-grid">
         {filteredTasks.map((task, index) => (
           <div
@@ -238,6 +240,7 @@ function Tasks() {
           </div>
         ))}
       </div>
+
       <Modal isOpen={isModalOpen} close={handleCloseModal} onRequestClose={handleCloseModal} contentLabel="Task Modal">
         <h2>{isEditing ? 'Edit Task' : 'Add Task'}</h2>
         <form onSubmit={createOrUpdateTasks}>

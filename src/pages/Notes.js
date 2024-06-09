@@ -115,6 +115,7 @@ const Notes = () => {
     } catch (error) {
       console.error("Failed to save note:", error);
     }
+    
   };
 
   const deleteNote = async () => {
